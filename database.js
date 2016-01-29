@@ -1,29 +1,43 @@
 
+var fs = require("fs");
+var sqlite3 = require("sqlite3").verbose();
+
 var Database = function() {
 	var scope = this;
+	this.databasefile = "weather.db";
+	var db;
+	var insertStatement;
+	var selectStatement;
 
-	this.checkDatabase = function() {
-
-	};
-
-	this.createDatabase = function() {
-
-	};
-
-	this.checkTable = function() {
-
+	this.init = function() {
+		if(!fs.existsSync(scope.databasefile)) {
+			var err = fs.writeFileSync(scope.databasefile, '', { flags: 'wx' });
+			if(err) { console.log(err); }
+		}
+		db = new sqlite3.Database(scope.databasefile);
+		this.createTable();
+		insertStatement = db.prepare("INSERT INTO temperature (date, temperature) VALUES($date, $temperature)");
+		selectStatement = db.prepare("SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd");
 	};
 
 	this.createTable = function() {
-
+		db.serialize(function() {
+			db.run("CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)");
+		});
 	};
 
-	this.insert = function(data) {
-
+	this.insert = function(data, callback) {
+		insertStatement.run({$date:data.date, $temperature:data.temperature}, function(err) {
+    	if(err) { console.log(err); }
+			callback(err);
+		});
 	};
 
-	this.get = function(dateStart, dateEnd) {
-
+	this.get = function(dateStart, dateEnd, callback) {
+		selectStatement.all({$dateStart:dateStart, $dateEnd:dateEnd}, function(err, results) {
+			if(err) { console.log(err); }
+			callback(results);
+  	});
 	};
 
 };
