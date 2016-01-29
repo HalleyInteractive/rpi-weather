@@ -40,6 +40,13 @@ var Database = function() {
   	});
 	};
 
+	this.getLastEntry = function(callback) {
+		db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
+			if(err) { console.log(err); }
+			callback(row);
+		});
+	};
+
 };
 
 module.exports = Database;

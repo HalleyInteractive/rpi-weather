@@ -77,6 +77,15 @@ describe("Database", function() {
 
 	});
 
+	describe("lastEntry", function() {
+		it("should return the last dummy entry", function(done) {
+			db.getLastEntry(function(row) {
+				expect(row).toEqual({date:1400, temperature:22});
+				done();
+			})
+		});
+	});
+
 	describe("teardown", function() {
 		it("should have removed it's test database file", function(done) {
 			fs.unlinkSync(test_database);
@@ -85,5 +94,5 @@ describe("Database", function() {
 			done();
 		});
 	});
-	
+
 });
