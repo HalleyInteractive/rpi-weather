@@ -16,19 +16,19 @@ var Api = function() {
 	});
 
 	app.get('/:start_date/:end_date', function(req, res) {
-		db.get(req.parameters.start_date, req.parameters.end_date, function(rows) {
+		db.get(req.params.start_date, req.params.end_date, function(rows) {
 			res.json(rows);
 		});
 	});
 
 	app.get('/extremes', function(req, res) {
-		db.get(req.parameters.start_date, req.parameters.end_date, function(rows) {
+		db.extremes(null, null, function(rows) {
 			res.json(rows);
 		});
 	});
 
 	app.get('/extremes/:start_date/:end_date', function(req, res) {
-		db.get(req.parameters.start_date, req.parameters.end_date, function(rows) {
+		db.extremes(req.params.start_date, req.params.end_date, function(rows) {
 			res.json(rows);
 		});
 	});
@@ -48,9 +48,7 @@ var Api = function() {
 			res.json(rows);
 		});
 	});
-
-
-
+	
 	app.listen(3000);
 };
 
