@@ -77,6 +77,73 @@ describe("Database", function() {
 
 	});
 
+	describe("extremes", function() {
+		it("should return all min and max temperature", function(done) {
+			db.extremes(null, null, function(extremes) {
+				expect(extremes).toEqual({
+					min: {
+						date:1200,
+						temperature:20
+					},
+					max: {
+						date:1400,
+						temperature:22
+					}
+				});
+				done();
+			});
+		});
+
+		it("should return filtered min and max temperature", function(done) {
+			db.extremes(1201, null, function(extremes) {
+				expect(extremes).toEqual({
+					min: {
+						date:1300,
+						temperature:21
+					},
+					max: {
+						date:1400,
+						temperature:22
+					}
+				});
+				done();
+			});
+		});
+
+		it("should return filtered min and max temperature", function(done) {
+			db.extremes(null, 1399, function(extremes) {
+				expect(extremes).toEqual({
+					min: {
+						date:1200,
+						temperature:20
+					},
+					max: {
+						date:1300,
+						temperature:21
+					}
+				});
+				done();
+			});
+		});
+
+		it("should return filtered min and max temperature", function(done) {
+			db.extremes(1201, 1399, function(extremes) {
+				expect(extremes).toEqual({
+					min: {
+						date:1300,
+						temperature:21
+					},
+					max: {
+						date:1300,
+						temperature:21
+					}
+				});
+				done();
+			});
+		});
+
+	});
+
 	describe("lastEntry", function() {
 		it("should return the last dummy entry", function(done) {
 			db.getLastEntry(function(row) {

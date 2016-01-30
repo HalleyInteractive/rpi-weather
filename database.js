@@ -40,6 +40,36 @@ var Database = function() {
   	});
 	};
 
+	this.extremes = function(dateStart, dateEnd, callback) {
+
+		var extremes = {
+			min: {},
+			max: {}
+		};
+
+		var filterQuery = dateStart || dateEnd ? " WHERE" : "";
+		if(dateStart) {
+			filterQuery += " date >= " + dateStart.toString();
+		}
+		if(dateEnd) {
+			if(dateStart) {
+				filterQuery += " AND";
+			}
+			filterQuery += " date < " + dateEnd.toString();
+		}
+
+		db.get('SELECT date, MIN(temperature) as temperature FROM temperature' + filterQuery, function(err, row) {
+			if(err) { console.log(err); }
+			extremes.min = row;
+			db.get('SELECT date, MAX(temperature) as temperature FROM temperature' + filterQuery, function(err, row) {
+				if(err) { console.log(err); }
+				extremes.max = row;
+				callback(extremes);
+			});
+		});
+
+	};
+
 	this.getLastEntry = function(callback) {
 		db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
 			if(err) { console.log(err); }
