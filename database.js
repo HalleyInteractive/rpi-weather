@@ -41,7 +41,6 @@ var Database = function() {
 	};
 
 	this.extremes = function(dateStart, dateEnd, callback) {
-
 		var extremes = {
 			min: {},
 			max: {}
@@ -67,7 +66,6 @@ var Database = function() {
 				callback(extremes);
 			});
 		});
-
 	};
 
 	this.getLastEntry = function(callback) {
