@@ -1,8 +1,6 @@
 var Temp = require('./../temperature.js');
 var tmpRead = new Temp();
 
-
-
 describe("Temperature class", function() {
 
 	describe("getTemperatureValue", function() {

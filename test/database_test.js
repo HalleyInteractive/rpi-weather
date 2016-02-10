@@ -1,38 +1,19 @@
 var Database = require('./../database.js');
+var settings = require('./../settings.js');
+var assert = require('chai').assert;
 var db = new Database();
+settings.database_file = 'test_database.db';
 var fs = require('fs');
-var test_database = 'test.db';
-
 
 describe("Database", function() {
-	describe("preInit", function() {
-		it("should not have a test database file", function(done) {
-			var dbexists = fs.existsSync(test_database);
-			expect(dbexists).toBe(false);
-			done();
-		});
-
-		it("should have created a database file", function(done) {
-			db.databasefile = test_database;
-			db.init();
-			var dbexists = fs.existsSync(test_database);
-			expect(dbexists).toBe(true);
-			done();
-		});
-
-		it("should not have any rows", function(done) {
-			db.get(0, 99999999999, function(rows) {
-				expect(rows.length).toBe(0);
-				done();
-			});
-		});
-	});
-
 	describe("insert", function() {
-		it("Should add three row", function(done) {
-			db.insert({date: 1200, temperature: 20}, function() {
-				db.insert({date: 1300, temperature: 21}, function() {
-					db.insert({date: 1400, temperature: 22}, function() {
+		it("Should add three rows", function(done) {
+			db.insert({date: 1200, temperature: 20}, function(err) {
+				assert.isNull(err, "Insert callback returns no error");
+				db.insert({date: 1300, temperature: 21}, function(err) {
+					assert.isNull(err, "Insert callbacl returns no error");
+					db.insert({date: 1400, temperature: 22}, function(err) {
+						assert.isNull(err, "Insert callbacl returns no error");
 						done();
 					});
 				});
@@ -43,34 +24,36 @@ describe("Database", function() {
 	describe("get", function() {
 		it("startDate 1200, endDate 1400 should return all 3 rows", function(done) {
 			db.get(1200, 1400, function(rows) {
-				expect(rows.length).toBe(3);
-				expect(rows[0]).toEqual({date:1200, temperature:20});
-				expect(rows[1]).toEqual({date:1300, temperature:21});
-				expect(rows[2]).toEqual({date:1400, temperature:22});
+				assert.equal(rows.length, 3);
+				console.log(rows);
+				console.log(rows.length);
+				assert.deepEqual(rows[0], {date:1200, temperature:20});
+				assert.equal(rows[1], {date:1300, temperature:21});
+				assert.equal(rows[2], {date:1400, temperature:22});
 				done();
 			});
 		});
 
 		it("should return {date:1200:, temperature:20}", function(done){
 			db.get(1200, 1299, function(rows) {
-				expect(rows.length).toBe(1);
-				expect(rows[0]).toEqual({date:1200, temperature:20});
+				assert.equal(rows.length, 1);
+				assert.equal(rows[0], {date:1200, temperature:20});
 				done();
 			});
 		});
 
 		it("should return {date:1300:, temperature:21}", function(done){
 			db.get(1300, 1399, function(rows) {
-				expect(rows.length).toBe(1);
-				expect(rows[0]).toEqual({date:1300, temperature:21});
+				assert.equal(rows.length, 1);
+				assert.equal(rows[0], {date:1300, temperature:21});
 				done();
 			});
 		});
 
 		it("should return {date:1400:, temperature:22}", function(done){
 			db.get(1400, 1499, function(rows) {
-				expect(rows.length).toBe(1);
-				expect(rows[0]).toEqual({date:1400, temperature:22});
+				assert.equal(rows.length, 1);
+				assert.equal(rows[0], {date:1400, temperature:22});
 				done();
 			});
 		});
@@ -80,7 +63,7 @@ describe("Database", function() {
 	describe("extremes", function() {
 		it("should return all min and max temperature", function(done) {
 			db.extremes(null, null, function(extremes) {
-				expect(extremes).toEqual({
+				assert.equal(extremes,{
 					min: {
 						date:1200,
 						temperature:20
@@ -96,7 +79,7 @@ describe("Database", function() {
 
 		it("should return filtered min and max temperature", function(done) {
 			db.extremes(1201, null, function(extremes) {
-				expect(extremes).toEqual({
+				assert.equal(extremes, {
 					min: {
 						date:1300,
 						temperature:21
@@ -112,7 +95,7 @@ describe("Database", function() {
 
 		it("should return filtered min and max temperature", function(done) {
 			db.extremes(null, 1399, function(extremes) {
-				expect(extremes).toEqual({
+				assert.equal(extremes, {
 					min: {
 						date:1200,
 						temperature:20
@@ -128,7 +111,7 @@ describe("Database", function() {
 
 		it("should return filtered min and max temperature", function(done) {
 			db.extremes(1201, 1399, function(extremes) {
-				expect(extremes).toEqual({
+				assert.equal(extremes, {
 					min: {
 						date:1300,
 						temperature:21
@@ -147,18 +130,9 @@ describe("Database", function() {
 	describe("lastEntry", function() {
 		it("should return the last dummy entry", function(done) {
 			db.getLastEntry(function(row) {
-				expect(row).toEqual({date:1400, temperature:22});
+				assert.equal(row, {date:1400, temperature:22});
 				done();
-			})
-		});
-	});
-
-	describe("teardown", function() {
-		it("should have removed it's test database file", function(done) {
-			fs.unlinkSync(test_database);
-			var dbexists = fs.existsSync(test_database);
-			expect(dbexists).toBe(false);
-			done();
+			});
 		});
 	});
 

@@ -1,23 +1,26 @@
-
 var fs = require("fs");
 var sqlite3 = require("sqlite3").verbose();
+var settings = require('./settings.js');
+var db = null;
 
 var Database = function() {
 	var scope = this;
-	this.databasefile = "weather.db";
-	var db;
 	var insertStatement;
 	var selectStatement;
 
 	this.init = function() {
-		if(!fs.existsSync(scope.databasefile)) {
-			var err = fs.writeFileSync(scope.databasefile, '', { flags: 'wx' });
-			if(err) { console.log(err); }
+		if(db === null) {
+			console.log("INIT DB: " + settings.database_file);
+			if(!fs.existsSync(settings.database_file)) {
+				console.log("WRITE DB FILE");
+				var err = fs.writeFileSync(settings.database_file, '', { flags: 'wx' });
+				if(err) { console.log(err); }
+			}
+			db = new sqlite3.Database(settings.database_file);
+			this.createTable();
+			insertStatement = db.prepare("INSERT INTO temperature (date, temperature) VALUES($date, $temperature)");
+			selectStatement = db.prepare("SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd");
 		}
-		db = new sqlite3.Database(scope.databasefile);
-		this.createTable();
-		insertStatement = db.prepare("INSERT INTO temperature (date, temperature) VALUES($date, $temperature)");
-		selectStatement = db.prepare("SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd");
 	};
 
 	this.createTable = function() {
