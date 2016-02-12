@@ -1,17 +1,17 @@
 var Database = require('./../database.js');
 var settings = require('./../settings.js');
 var assert = require('chai').assert;
-var db = new Database();
 var fs = require('fs');
+var db = new Database();
 
 before(function() {
 
 	console.log("SETUP");
 
 	settings.database_file = 'test_database.db';
+	var dbexists = fs.existsSync(settings.database_file);
 
 	it("should not have a test database file", function(done) {
-		var dbexists = fs.existsSync(settings.database_file);
 		assert.isFalse(dbexists, "Database does not exist");
 		done();
 	});
