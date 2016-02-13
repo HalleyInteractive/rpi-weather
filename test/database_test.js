@@ -10,13 +10,19 @@ describe("Database", function() {
 	describe("insert", function() {
 		it("Should add three rows", function(done) {
 			db.init();
-			db.insert({date: 1200, temperature: 20}, function(err) {
+			db.insert(settings.test_values.yesterday, function(err) {
 				assert.isNull(err, "Insert callback returns no error");
-				db.insert({date: 1300, temperature: 21}, function(err) {
-					assert.isNull(err, "Insert callbacl returns no error");
-					db.insert({date: 1400, temperature: 22}, function(err) {
-						assert.isNull(err, "Insert callbacl returns no error");
-						done();
+				db.insert(settings.test_values.today, function(err) {
+					assert.isNull(err, "Insert callback returns no error");
+					db.insert(settings.test_values.tomorrow, function(err) {
+						assert.isNull(err, "Insert callback returns no error");
+						db.insert(settings.test_values.max, function(err) {
+							assert.isNull(err, "Insert callback returns no error");
+							db.insert(settings.test_values.min, function(err) {
+								assert.isNull(err, "Insert callback returns no error");
+								done();
+							});
+						});
 					});
 				});
 			});
@@ -24,36 +30,30 @@ describe("Database", function() {
 	});
 
 	describe("get", function() {
-		it("startDate 1200, endDate 1400 should return all 3 rows", function(done) {
-			db.get(1200, 1400, function(rows) {
-				assert.equal(rows.length, 3);
-				assert.deepEqual(rows[0], {date:1200, temperature:20});
-				assert.deepEqual(rows[1], {date:1300, temperature:21});
-				assert.deepEqual(rows[2], {date:1400, temperature:22});
+		it("yesterday, tomorrow should return all 5 rows", function(done) {
+			db.get(settings.test_values.yesterday.date - 1, settings.test_values.tomorrow.date + 1, function(rows) {
+				assert.equal(rows.length, 5);
+				assert.deepEqual(rows[0], settings.test_values.yesterday, "Yesterdays date should come back");
+				assert.deepEqual(rows[1], settings.test_values.today, "Todays date should come back");
+				assert.deepEqual(rows[2], settings.test_values.max, "Max value should come back");
+				assert.deepEqual(rows[3], settings.test_values.min, "Min value should come back");
+				assert.deepEqual(rows[4], settings.test_values.tomorrow, "Tomorrows date should come back");
 				done();
 			});
 		});
 
-		it("should return {date:1200:, temperature:20}", function(done){
-			db.get(1200, 1299, function(rows) {
+		it("should return yesterday", function(done){
+			db.get(settings.test_values.yesterday.date, settings.test_values.today.date - 1, function(rows) {
 				assert.equal(rows.length, 1);
-				assert.deepEqual(rows[0], {date:1200, temperature:20});
+				assert.deepEqual(rows[0], settings.test_values.yesterday);
 				done();
 			});
 		});
 
-		it("should return {date:1300:, temperature:21}", function(done){
-			db.get(1300, 1399, function(rows) {
+		it("should return tomorrow", function(done){
+			db.get(settings.test_values.tomorrow.date, settings.test_values.tomorrow.date + settings.seconds_today.date, function(rows) {
 				assert.equal(rows.length, 1);
-				assert.deepEqual(rows[0], {date:1300, temperature:21});
-				done();
-			});
-		});
-
-		it("should return {date:1400:, temperature:22}", function(done){
-			db.get(1400, 1499, function(rows) {
-				assert.equal(rows.length, 1);
-				assert.deepEqual(rows[0], {date:1400, temperature:22});
+				assert.deepEqual(rows[0], settings.test_values.tomorrow);
 				done();
 			});
 		});
@@ -64,62 +64,28 @@ describe("Database", function() {
 		it("should return all min and max temperature", function(done) {
 			db.extremes(null, null, function(extremes) {
 				assert.deepEqual(extremes,{
-					min: {
-						date:1200,
-						temperature:20
-					},
-					max: {
-						date:1400,
-						temperature:22
-					}
+					min: settings.test_values.min,
+					max: settings.test_values.max
 				});
 				done();
 			});
 		});
 
 		it("should return filtered min and max temperature", function(done) {
-			db.extremes(1201, null, function(extremes) {
+			db.extremes(settings.test_values.tomorrow.date, null, function(extremes) {
 				assert.deepEqual(extremes, {
-					min: {
-						date:1300,
-						temperature:21
-					},
-					max: {
-						date:1400,
-						temperature:22
-					}
+					min: settings.test_values.tomorrow,
+					max: settings.test_values.tomorrow
 				});
 				done();
 			});
 		});
 
 		it("should return filtered min and max temperature", function(done) {
-			db.extremes(null, 1399, function(extremes) {
+			db.extremes(null, settings.test_values.yesterday.date, function(extremes) {
 				assert.deepEqual(extremes, {
-					min: {
-						date:1200,
-						temperature:20
-					},
-					max: {
-						date:1300,
-						temperature:21
-					}
-				});
-				done();
-			});
-		});
-
-		it("should return filtered min and max temperature", function(done) {
-			db.extremes(1201, 1399, function(extremes) {
-				assert.deepEqual(extremes, {
-					min: {
-						date:1300,
-						temperature:21
-					},
-					max: {
-						date:1300,
-						temperature:21
-					}
+					min: settings.test_values.yesterday,
+					max: settings.test_values.yesterday
 				});
 				done();
 			});
@@ -130,7 +96,7 @@ describe("Database", function() {
 	describe("lastEntry", function() {
 		it("should return the last dummy entry", function(done) {
 			db.getLastEntry(function(row) {
-				assert.deepEqual(row, {date:1400, temperature:22});
+				assert.deepEqual(row, settings.test_values.tomorrow);
 				done();
 			});
 		});
