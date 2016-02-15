@@ -12,10 +12,56 @@ describe("Webserver for the API", function() {
 		done();
 	});
 
-	it("Should return todays temperatures", function(done) {
+	it("Should return last temperature entry", function(done) {
 		request(base_url + '/api/', function(error, response, body) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body), settings.test_values.tomorrow);
+			done();
+		});
+	});
+
+	it("Should return todays entries", function(done){
+		request(base_url + '/api/today', function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				[
+					settings.test_values.today,
+					settings.test_values.max,
+					settings.test_values.min
+				]);
+			done();
+		});
+	});
+
+	it("Should return this weeks entries", function(done){
+		request(base_url + '/api/week/', function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				[
+					settings.test_values.yesterday,
+					settings.test_values.today,
+					settings.test_values.max,
+					settings.test_values.min
+				]);
+			done();
+		});
+	});
+
+	it("Should return yesterdays entries", function(done) {
+
+		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
+		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+
+		request(base_url + '/api/' + yesterday + '/' + just_before_today, function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				[
+					settings.test_values.yesterday
+				]);
 			done();
 		});
 	});

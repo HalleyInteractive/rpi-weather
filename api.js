@@ -1,7 +1,7 @@
 var router = require('express').Router();
 var Database = require('./database.js');
 var db = new Database();
-var seconds_in_day = 60*60*24;
+var milliseconds_in_day = 60*60*24*1000;
 
 db.init();
 
@@ -31,16 +31,16 @@ router.get('/extremes/:start_date/:end_date', function(req, res) {
 
 router.get('/today', function(req, res) {
 	var now = new Date();
-	var seconds_today = (now.getHours() * 60 * 60) + (now.getMinutes() * 60) + now.getSeconds();
-	db.get(now.getTime() - seconds_today, now.getTime(), function(rows) {
+	var milliseconds_today = ((now.getHours() * 60 * 60) + (now.getMinutes() * 60) + now.getSeconds()) * 1000;
+	db.get(now.getTime() - milliseconds_today - 1000, now.getTime(), function(rows, test) {
 		res.json(rows);
 	});
 });
 
 router.get('/week', function(req, res) {
 	var now = new Date();
-	var seconds_today = (now.getHours() * 60 * 60) + (now.getMinutes() * 60) + now.getSeconds();
-	db.get(now.getTime() - seconds_today - (seconds_in_day * 6), now.getTime(), function(rows) {
+	var milliseconds_today = ((now.getHours() * 60 * 60) + (now.getMinutes() * 60) + now.getSeconds()) * 1000;
+	db.get(now.getTime() - milliseconds_today - (milliseconds_in_day * 6), now.getTime(), function(rows) {
 		res.json(rows);
 	});
 });

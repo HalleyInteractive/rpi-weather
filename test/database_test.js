@@ -43,7 +43,7 @@ describe("Database", function() {
 		});
 
 		it("should return yesterday", function(done){
-			db.get(settings.test_values.yesterday.date, settings.test_values.today.date - 1, function(rows) {
+			db.get(settings.test_values.yesterday.date, settings.test_values.yesterday.date, function(rows) {
 				assert.equal(rows.length, 1);
 				assert.deepEqual(rows[0], settings.test_values.yesterday);
 				done();
@@ -51,7 +51,7 @@ describe("Database", function() {
 		});
 
 		it("should return tomorrow", function(done){
-			db.get(settings.test_values.tomorrow.date, settings.test_values.tomorrow.date + settings.seconds_today, function(rows) {
+			db.get(settings.test_values.tomorrow.date, settings.test_values.tomorrow.date + settings.milliseconds_today, function(rows) {
 				assert.equal(rows.length, 1);
 				assert.deepEqual(rows[0], settings.test_values.tomorrow);
 				done();
