@@ -1,12 +1,18 @@
-/*
 var Temp = require('./temperature.js');
-
+var Database = require('./database.js');
 var tmpRead = new Temp();
-setInterval(tmpRead.readTemperature(logTmp));
+var lastTemperature = null;
+var db = new Database();
+var server = require('./server.js');
+
+db.init();
+
+setInterval(tmpRead.readTemperature(logTmp), 100);
 
 function logTmp(data) {
-	console.log(data);
+	if(data !== lastTemperature) {
+		lastTemperature = data;
+		db.insert({date:new Date().getTime(), temperature: data});
+		server.update(data);
+	}
 }
-*/
-
-var Api = require('./api.js')();

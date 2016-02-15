@@ -1,0 +1,20 @@
+<html>
+	<head>
+		<title>{{test_title}}</title>
+		<script src="/socket.io/socket.io.js"></script>
+		<script>
+		  var socket = io.connect();
+		  socket.on('update', function (data) {
+		    var temperature = document.getElementById('temperature-value');
+				temperature.innerHTML = data.temperature;
+		  });
+		</script>
+		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+		<link href='css/style.css' rel='stylesheet' type='text/css'>
+
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body>
+		{{{body}}}
+	</body>
+</html>
