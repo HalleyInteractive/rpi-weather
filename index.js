@@ -11,7 +11,7 @@ setInterval(function() {
 	tmpRead.readTemperature(function(data) {
 		if(data !== lastTemperature) {
 			lastTemperature = data;
-			db.insert({date:new Date().getTime(), temperature: data});
+			db.insert({date:new Date().getTime(), temperature: data}, function() {});
 			server.update(data);
 		}
 	}.bind(this));
