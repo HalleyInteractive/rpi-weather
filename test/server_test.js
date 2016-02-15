@@ -50,6 +50,36 @@ describe("Webserver for the API", function() {
 		});
 	});
 
+	it("Should return extremes", function(done){
+		request(base_url + '/api/extremes/', function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				{
+					max: settings.test_values.max,
+					min: settings.test_values.min
+				});
+			done();
+		});
+	});
+
+	it("Should return filtered extremes", function(done) {
+
+		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
+		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+
+		request(base_url + '/api/extremes/' + yesterday + '/' + just_before_today, function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				{
+					max: settings.test_values.yesterday,
+					min: settings.test_values.yesterday
+				});
+			done();
+		});
+	});
+
 	it("Should return yesterdays entries", function(done) {
 
 		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
