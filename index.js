@@ -7,12 +7,10 @@ var server = require('./server.js');
 
 db.init();
 
-function logTmp(data) {
+setInterval(tmpRead.readTemperature(function(data) {
 	if(data !== lastTemperature) {
 		lastTemperature = data;
 		db.insert({date:new Date().getTime(), temperature: data});
 		server.update(data);
 	}
-}
-
-setInterval(tmpRead.readTemperature(logTmp), 100);
+}.bind(this)), 100);
