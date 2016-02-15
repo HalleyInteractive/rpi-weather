@@ -10,6 +10,7 @@ db.init();
 setInterval(function() {
 	tmpRead.readTemperature(function(data) {
 		if(data !== lastTemperature) {
+			console.log("temp change from " + lastTemperature + " to " + data);
 			lastTemperature = data;
 			db.insert({date:new Date().getTime(), temperature: data}, function() {});
 			server.update(data);
