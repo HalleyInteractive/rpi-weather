@@ -1,6 +1,7 @@
 html,
 body {
 	font-family: 'Roboto', sans-serif;
+	background-color: #EEE;
 }
 
 #temperature-wrapper {
@@ -9,4 +10,5 @@ body {
 
 #temperature {
 	font-size: 5em;
+	color: #333;
 }
