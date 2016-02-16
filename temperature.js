@@ -17,7 +17,11 @@ var Temperature = function() {
 	};
 
 	this.getCelciusValue = function(value) {
-		return (Math.round(parseInt(value) / 100)/10).toFixed(1);
+		return this.roundHalf((Math.round(parseInt(value) / 100)/10).toFixed(1));
+	};
+
+	this.roundHalf = function(num) {
+    return Math.round(num*2)/2;
 	};
 
 	this.readTemperature = function(cb, path) {

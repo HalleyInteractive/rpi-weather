@@ -40,7 +40,7 @@ describe("Temperature class", function() {
 
 		    it("Returns celcius round down", function(done) {
 		      var celcius1 = tmpRead.getCelciusValue(34449);
-					assert.equal(celcius1, "34.4");
+					assert.equal(celcius1, "34.5");
 		      done();
 		    });
 
@@ -57,8 +57,8 @@ describe("Temperature class", function() {
 		    });
 
 				it("Returns celcius fixed decimals", function(done) {
-		      var celcius1 = tmpRead.getCelciusValue(-2300);
-					assert.equal(celcius1, "-2.3");
+		      var celcius1 = tmpRead.getCelciusValue(-2500);
+					assert.equal(celcius1, "-2.5");
 		      done();
 		    });
 
@@ -68,10 +68,36 @@ describe("Temperature class", function() {
 
 		    it("Returns value from file", function(done) {
 		      tmpRead.readTemperature(function(temperature) {
-						assert.equal(temperature, "22.9");
+						assert.equal(temperature, "23");
 						done();
 					},'test/assets/1wire_mock_1.txt');
 		    });
+
+		});
+
+		describe("roundHalf", function() {
+
+			it("Returns 0 for 0, 0.1, 0.2", function(done) {
+				assert.equal(tmpRead.roundHalf(0), 0);
+				assert.equal(tmpRead.roundHalf(0.1), 0);
+				assert.equal(tmpRead.roundHalf(0.2), 0);
+				done();
+			});
+
+			it("Returns 0.5 for 0.3, 0.4, 0.5, 0.6", function(done) {
+				assert.equal(tmpRead.roundHalf(0.3), 0.5);
+				assert.equal(tmpRead.roundHalf(0.4), 0.5);
+				assert.equal(tmpRead.roundHalf(0.6), 0.5);
+				done();
+			});
+
+			it("Returns 1 for 0.7, 0.8, 0.9, 1", function(done) {
+				assert.equal(tmpRead.roundHalf(0.7), 0.5);
+				assert.equal(tmpRead.roundHalf(0.8), 1);
+				assert.equal(tmpRead.roundHalf(0.9), 1);
+				assert.equal(tmpRead.roundHalf(1), 1);
+				done();
+			});
 
 		});
 
