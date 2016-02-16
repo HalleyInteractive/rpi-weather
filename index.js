@@ -15,4 +15,4 @@ setInterval(function() {
 			server.update(data);
 		}
 	}.bind(this));
-}.bind(this), 1000);
+}.bind(this), 10000);
