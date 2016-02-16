@@ -8,7 +8,7 @@ body {
 
 }
 
-#temperature {
+.reading {
 	font-size: 5em;
 	color: #333;
 }
