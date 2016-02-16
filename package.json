@@ -2,6 +2,7 @@
   "name": "rpi-thermo",
   "version": "1.0.0",
   "description": "Reads and logs temperatures",
+	"repository": "https://github.com/HalleyInteractive/rpi-weather",
   "main": "index.js",
   "scripts": {
     "test": "mocha"
