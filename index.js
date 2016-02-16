@@ -16,4 +16,4 @@ setInterval(function() {
 			server.update(data);
 		}
 	}.bind(this));
-}.bind(this), 100);
+}.bind(this), 1000);
