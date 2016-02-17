@@ -9,11 +9,11 @@
       data.addColumn('datetime', 'Date');
       data.addColumn('number', 'Temperature');
 
-      data.addRows(
+      data.addRows([
 				{{#each rows}}
 			    [new Date({{date}}),  {{temperature}}],
 				{{/each}}
-			);
+			]);
 
     var options = {
       title: 'Temperature',
