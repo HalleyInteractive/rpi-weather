@@ -13,11 +13,11 @@ before(function() {
 
 	settings.now = new Date();
 	settings.milliseconds_today = ((settings.now.getHours() * 60 * 60) + (settings.now.getMinutes() * 60) + settings.now.getSeconds()) * 1000;
-	settings.milliseconds_in_day = 60*60*24*1000;
+	//settings.milliseconds_in_day = 60*60*24*1000;
 
 	settings.test_values = {
 		yesterday: {
-			date: settings.now.getTime() - settings.milliseconds_today - (settings.milliseconds_in_day/2),
+			date: settings.now.getTime() - settings.milliseconds_in_day + 1000,
 			temperature: 20
 		},
 		today: {

@@ -24,6 +24,14 @@ app.get('/', function (req, res) {
 	});
 });
 
+app.get('/chart', function (req, res) {
+	var now = new Date();
+	db.get(now.getTime() - settings.milliseconds_in_day, now.getTime(), function(rows) {
+		res.render('chart', {rows: rows});
+	});
+});
+
+
 server.listen(port);
 
 function update(temperature) {
