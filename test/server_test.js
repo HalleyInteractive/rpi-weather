@@ -96,4 +96,20 @@ describe("Webserver for the API", function() {
 		});
 	});
 
+	it("Should return yesterdays and todays entries", function(done) {
+		
+		request(base_url + '/api/24hours', function(error, response, body) {
+			assert.isNull(error);
+			assert.equal(response.statusCode, 200);
+			assert.deepEqual(JSON.parse(response.body),
+				[
+					settings.test_values.yesterday,
+					settings.test_values.today,
+					settings.test_values.min,
+					settings.test_values.max
+				]);
+			done();
+		});
+	});
+
 });

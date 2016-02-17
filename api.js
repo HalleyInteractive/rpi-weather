@@ -45,4 +45,11 @@ router.get('/week', function(req, res) {
 	});
 });
 
+router.get('/24hours', function(req, res) {
+	var now = new Date();
+	db.get(now.getTime() - milliseconds_in_day, now.getTime(), function(rows) {
+		res.json(rows);
+	});
+});
+
 module.exports = router;
