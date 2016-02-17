@@ -2,10 +2,10 @@
   "name": "rpi-thermo",
   "version": "1.0.0",
   "description": "Reads and logs temperatures",
-	"repository": "https://github.com/HalleyInteractive/rpi-weather",
+  "repository": "https://github.com/HalleyInteractive/rpi-weather",
   "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && ./node_modules/.bin/codecov"
   },
   "author": "Niels Overwijn",
   "license": "MIT",
@@ -17,6 +17,8 @@
   },
   "devDependencies": {
     "chai": "^3.5.0",
+    "codecov": "^1.0.1",
+    "istanbul": "^0.4.2",
     "mocha": "^2.4.5",
     "request": "^2.69.0"
   }

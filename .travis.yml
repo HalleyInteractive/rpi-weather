@@ -5,3 +5,8 @@ node_js:
 test:
   adapter: sqlite3
   database: test.db
+
+before_install:
+  - pip install codecov
+after_success:
+  - codecov
