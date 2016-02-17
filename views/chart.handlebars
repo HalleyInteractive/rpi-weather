@@ -9,11 +9,11 @@
       data.addColumn('datetime', 'Date');
       data.addColumn('number', 'Temperature');
 
-			var readings = [
-				{{rows}}
-			]
-
-      data.addRows(readings.map(convertToChartData));
+      data.addRows(
+				{{#each rows}}
+			    [new Date({{@date}}),  {{@temperate}}],
+				{{/each}}
+			);
 
     var options = {
       title: 'Temperature',
@@ -26,11 +26,5 @@
     chart.draw(data, options);
   }
 
-	function convertToChartData(obj) {
-		return [
-			new Date(obj.date),
-			obj.temperature
-		];
-	}
 </script>
 <div id="curve_chart" style="width: 900px; height: 500px"></div>
