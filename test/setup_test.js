@@ -17,7 +17,7 @@ before(function() {
 
 	settings.test_values = {
 		yesterday: {
-			date: settings.now.getTime() - settings.milliseconds_in_day + 1000,
+			date: settings.now.getTime() - settings.milliseconds_in_day + 120000,
 			temperature: 20
 		},
 		today: {
