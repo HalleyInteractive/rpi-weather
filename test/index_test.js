@@ -74,7 +74,7 @@ describe("Temperature class", function() {
 		    });
 
 				it("Throws an error", function(done) {
-					assert.throw(tmpRead.readTemperature(function() {}));
+					assert.throw(tmpRead.readTemperature, 'Onewire file doesn\'t exist');
 					done();
 				});
 
