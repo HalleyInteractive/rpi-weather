@@ -1,5 +1,5 @@
 javascript:
-  config_file: test/assets/javascript-style.json
+  config_file: ./test/assets/javascript-style.json
 jscs:
   enabled: true
-  config_file: test/assets/jscs-config.json
+  config_file: ./test/assets/jscs-config.json
