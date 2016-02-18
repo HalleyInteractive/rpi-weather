@@ -73,6 +73,11 @@ describe("Temperature class", function() {
 					},'test/assets/1wire_mock_1.txt');
 		    });
 
+				it('Throws an error', function(done) {
+					assert.throw(tmpRead.readTemperature, 'Onewire file doesn\'t exist');
+					done();
+				});
+
 		});
 
 		describe("roundHalf", function() {

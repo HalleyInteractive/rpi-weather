@@ -28,10 +28,14 @@ var Temperature = function() {
 		if(path === undefined) {
 			path = onewirePath;
 		}
-		fs.readFile(path, 'utf8', function(err, data) {
-			if(err) throw err;
-			cb(scope.getCelciusValue(scope.getTemperatureValue(data)));
-		});
+		if(fs.existsSync(path)) {
+			fs.readFile(path, 'utf8', function(err, data) {
+				if(err) { throw err; }
+				cb(scope.getCelciusValue(scope.getTemperatureValue(data)));
+			});
+		} else {
+			throw new Error('Onewire file doesn\'t exist');
+		}
 	};
 
 };
