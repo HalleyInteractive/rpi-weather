@@ -1,8 +1,7 @@
-var Database = require('./../database.js');
+var db = require('./../database.js');
 var settings = require('./../settings.js');
 var assert = require('chai').assert;
 var fs = require('fs');
-var db = new Database();
 
 settings.database_file = 'test_database.db';
 

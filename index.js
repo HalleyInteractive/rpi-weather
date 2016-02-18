@@ -1,8 +1,7 @@
 var Temp = require('./temperature.js');
-var Database = require('./database.js');
+var db = require('./database.js');
 var tmpRead = new Temp();
 var lastTemperature = null;
-var db = new Database();
 var server = require('./server.js');
 
 db.init();

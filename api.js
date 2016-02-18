@@ -1,6 +1,5 @@
 var router = require('express').Router();
-var Database = require('./database.js');
-var db = new Database();
+var db = require('./database.js');
 var milliseconds_in_day = 60*60*24*1000;
 
 db.init();
