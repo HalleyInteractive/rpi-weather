@@ -30,7 +30,7 @@ var Temperature = function() {
 		}
 		if(fs.existsSync(path)) {
 			fs.readFile(path, 'utf8', function(err, data) {
-				if(err) { throw err };
+				if(err) { throw err; }
 				cb(scope.getCelciusValue(scope.getTemperatureValue(data)));
 			});
 		} else {
