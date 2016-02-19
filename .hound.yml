@@ -1,3 +1,6 @@
 javascript:
   enabled: true
   config_file: .javascript-style.json
+#jscs:
+#  enabled: true
+#  config_file: .jscsrc
