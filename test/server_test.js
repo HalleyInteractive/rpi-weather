@@ -7,7 +7,8 @@ var base_url = 'http://localhost:' + settings.SERVER_PORT;
 
 describe("Webserver for the API", function() {
 
-	it("Should start a webserver for the weather API and add a few readings", function(done) {
+	it("Should start a webserver for the weather API and add a few readings",
+	function(done) {
 		server = require('./../server.js');
 		done();
 	});
@@ -16,7 +17,8 @@ describe("Webserver for the API", function() {
 		request(base_url + '/api/', function(error, response, body) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
-			assert.deepEqual(JSON.parse(response.body), settings.test_values.tomorrow);
+			assert.deepEqual(JSON.parse(response.body),
+				settings.test_values.tomorrow);
 			done();
 		});
 	});
@@ -65,10 +67,15 @@ describe("Webserver for the API", function() {
 
 	it("Should return filtered extremes", function(done) {
 
-		var yesterday = settings.now.getTime() - settings.MILLISECONDS_TODAY - settings.MILLISECONDS_IN_DAY;
-		var just_before_today = settings.now.getTime() - settings.MILLISECONDS_TODAY - 1000;
+		var yesterday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY -
+		settings.MILLISECONDS_IN_DAY;
 
-		request(base_url + '/api/extremes/' + yesterday + '/' + just_before_today, function(error, response, body) {
+		var justBeforeToday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY - 1000;
+
+		request(base_url + '/api/extremes/' + yesterday + '/' + justBeforeToday,
+		function(error, response, body) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
@@ -82,10 +89,15 @@ describe("Webserver for the API", function() {
 
 	it("Should return yesterdays entries", function(done) {
 
-		var yesterday = settings.now.getTime() - settings.MILLISECONDS_TODAY - settings.MILLISECONDS_IN_DAY;
-		var just_before_today = settings.now.getTime() - settings.MILLISECONDS_TODAY - 1000;
+		var yesterday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY -
+		settings.MILLISECONDS_IN_DAY;
 
-		request(base_url + '/api/' + yesterday + '/' + just_before_today, function(error, response, body) {
+		var justBeforeToday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY - 1000;
+
+		request(base_url + '/api/' + yesterday + '/' + justBeforeToday,
+		function(error, response, body) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
