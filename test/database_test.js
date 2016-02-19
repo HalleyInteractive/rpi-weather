@@ -3,7 +3,7 @@ var settings = require('./../settings.js');
 var assert = require('chai').assert;
 var fs = require('fs');
 
-settings.database_file = 'test_database.db';
+settings.DATABASE_FILE = 'test_database.db';
 
 describe("Database", function() {
 	describe("insert", function() {
@@ -50,7 +50,7 @@ describe("Database", function() {
 		});
 
 		it("should return tomorrow", function(done){
-			db.get(settings.test_values.tomorrow.date, settings.test_values.tomorrow.date + settings.milliseconds_today, function(rows) {
+			db.get(settings.test_values.tomorrow.date, settings.test_values.tomorrow.date + settings.MILLISECONDS_TODAY, function(rows) {
 				assert.equal(rows.length, 1);
 				assert.deepEqual(rows[0], settings.test_values.tomorrow);
 				done();

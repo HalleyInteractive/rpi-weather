@@ -3,7 +3,7 @@ var assert = require('chai').assert;
 var settings = require('../settings.js');
 var request = require('request');
 var server = null;
-var base_url = 'http://localhost:' + settings.server_port;
+var base_url = 'http://localhost:' + settings.SERVER_PORT;
 
 describe("Webserver for the API", function() {
 
@@ -65,8 +65,8 @@ describe("Webserver for the API", function() {
 
 	it("Should return filtered extremes", function(done) {
 
-		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
-		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+		var yesterday = settings.now.getTime() - settings.MILLISECONDS_TODAY - settings.MILLISECONDS_IN_DAY;
+		var just_before_today = settings.now.getTime() - settings.MILLISECONDS_TODAY - 1000;
 
 		request(base_url + '/api/extremes/' + yesterday + '/' + just_before_today, function(error, response, body) {
 			assert.isNull(error);
@@ -82,8 +82,8 @@ describe("Webserver for the API", function() {
 
 	it("Should return yesterdays entries", function(done) {
 
-		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
-		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+		var yesterday = settings.now.getTime() - settings.MILLISECONDS_TODAY - settings.MILLISECONDS_IN_DAY;
+		var just_before_today = settings.now.getTime() - settings.MILLISECONDS_TODAY - 1000;
 
 		request(base_url + '/api/' + yesterday + '/' + just_before_today, function(error, response, body) {
 			assert.isNull(error);
