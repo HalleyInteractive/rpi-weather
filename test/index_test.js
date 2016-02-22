@@ -24,8 +24,10 @@ describe('Temperature class', function() {
 
 			it('returns a temperature value', function(done) {
 				var mockValue3 = '6e 01 55 00 7f ff 0c 10 90 : ' +
-				'crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=6456 6e 01 55 ' +
-				'00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
+				'crc=90 YES 6e 01 55 00 7f ff ' +
+				'0c 10 90 t=6456 6e 01 55 ' +
+				'00 7f ff 0c 10 90 : crc=90 ' +
+				'YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
 	      var temperature3 = tmpRead.getTemperatureValue(mockValue3);
 				assert.equal(temperature3, '6456');
 	      done();
@@ -78,7 +80,8 @@ describe('Temperature class', function() {
 		    });
 
 				it('Throws an error', function(done) {
-					assert.throw(tmpRead.readTemperature, 'Onewire file doesn\'t exist');
+					assert.throw(tmpRead.readTemperature,
+						'Onewire file doesn\'t exist');
 					done();
 				});
 

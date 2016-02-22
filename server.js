@@ -6,7 +6,7 @@ var io = require('socket.io')(server);
 var exphbs  = require('express-handlebars');
 var api = require('./api.js');
 var db = require('./database.js');
-var port = process.env.PORT || settings.server_port;
+var port = process.env.PORT || settings.SERVER_PORT;
 
 db.init();
 

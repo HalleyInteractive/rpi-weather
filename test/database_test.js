@@ -9,22 +9,17 @@ describe('Database', function() {
 	describe('insert', function() {
 		it('Should add three rows', function(done) {
 			db.init();
-			db.insert(settings.testValues.yesterday,
-			function(err) {
-				assert.isNull(err, 'Insert callback returns no error');
-				db.insert(settings.testValues.today,
-					function(err) {
-						assert.isNull(err, 'Insert callback returns no error');
-					db.insert(settings.testValues.tomorrow,
-						function(err) {
-							assert.isNull(err, 'Insert callback returns no error');
-						db.insert(settings.testValues.max,
-							function(err) {
-								assert.isNull(err, 'Insert callback returns no error');
-							db.insert(settings.testValues.min,
-								function(err) {
-									assert.isNull(err, 'Insert callback returns no error');
-									done();
+			db.insert(settings.testValues.yesterday, function(err) {
+        assert.isNull(err, 'Insert callback returns no error');
+        db.insert(settings.testValues.today, function(err) {
+          assert.isNull(err, 'Insert callback returns no error');
+          db.insert(settings.testValues.tomorrow, function(err) {
+            assert.isNull(err, 'Insert callback returns no error');
+            db.insert(settings.testValues.max, function(err) {
+              assert.isNull(err, 'Insert callback returns no error');
+              db.insert(settings.testValues.min, function(err) {
+                assert.isNull(err, 'Insert callback returns no error');
+                done();
 							});
 						});
 					});
