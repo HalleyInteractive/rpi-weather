@@ -77,7 +77,7 @@ before(function() {
 
 	it('should have created a database file', function(done) {
 		db.init();
-		var dbexists = fs.existsSync(settings.database_file);
+		var dbexists = fs.existsSync(settings.DATABASE_FILE);
 		assert.isTrue(dbexists);
 		done();
 	});
@@ -93,8 +93,8 @@ before(function() {
 
 after(function() {
 
-	fs.unlinkSync(settings.database_file);
-	var dbexists = fs.existsSync(settings.database_file);
+	fs.unlinkSync(settings.DATABASE_FILE);
+	var dbexists = fs.existsSync(settings.DATABASE_FILE);
 
 	it('should have removed it\'s test database file', function(done) {
 		assert.isFalse(dbexists);

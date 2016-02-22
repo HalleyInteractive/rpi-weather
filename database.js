@@ -10,11 +10,11 @@ var Database = function() {
 
 	this.init = function() {
 		if(!global.db) {
-			if(!fs.existsSync(settings.database_file)) {
-				var err = fs.writeFileSync(settings.database_file, '', { flags: 'wx' });
+			if(!fs.existsSync(settings.DATABASE_FILE)) {
+				var err = fs.writeFileSync(settings.DATABASE_FILE, '', { flags: 'wx' });
 				if(err) { console.log(err); }
 			}
-			global.db = new sqlite3.Database(settings.database_file);
+			global.db = new sqlite3.Database(settings.DATABASE_FILE);
 		}
 		db = global.db;
 		this.createTable();
