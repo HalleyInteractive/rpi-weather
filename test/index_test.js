@@ -7,21 +7,25 @@ describe('Temperature class', function() {
 	describe('getTemperatureValue', function() {
 
 	    it('returns a temperature value', function(done) {
-				var mockValue1 = '6e 01 55 00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
+				var mockValue1 = '6e 01 55 00 7f ff 0c 10 90 : ' +
+				'crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
 	      var temperature1 = tmpRead.getTemperatureValue(mockValue1);
 				assert.equal(temperature1, '22875');
 	      done();
 	    });
 
 			it('returns a temperature value', function(done) {
-				var mockValue2 = '6e 01 55 00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=235235346';
+				var mockValue2 = '6e 01 55 00 7f ff 0c 10 90 : ' +
+				'crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=235235346';
 	      var temperature2 = tmpRead.getTemperatureValue(mockValue2);
 				assert.equal(temperature2, '235235346');
 	      done();
 	    });
 
 			it('returns a temperature value', function(done) {
-				var mockValue3 = '6e 01 55 00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=6456 6e 01 55 00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
+				var mockValue3 = '6e 01 55 00 7f ff 0c 10 90 : ' +
+				'crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=6456 6e 01 55 ' +
+				'00 7f ff 0c 10 90 : crc=90 YES 6e 01 55 00 7f ff 0c 10 90 t=22875';
 	      var temperature3 = tmpRead.getTemperatureValue(mockValue3);
 				assert.equal(temperature3, '6456');
 	      done();

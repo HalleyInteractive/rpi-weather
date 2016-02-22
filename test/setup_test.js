@@ -5,8 +5,6 @@ var fs = require('fs');
 
 before(function() {
 
-	console.log('SETUP');
-
 	settings.DATABASE_FILE = 'test_database.db';
 	var dbexists = fs.existsSync(settings.DATABASE_FILE);
 
@@ -94,8 +92,6 @@ before(function() {
 });
 
 after(function() {
-
-	console.log('TEARDOWN');
 
 	fs.unlinkSync(settings.database_file);
 	var dbexists = fs.existsSync(settings.database_file);

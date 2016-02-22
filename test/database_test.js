@@ -9,17 +9,22 @@ describe('Database', function() {
 	describe('insert', function() {
 		it('Should add three rows', function(done) {
 			db.init();
-			db.insert(settings.testValues.yesterday, function(err) {
+			db.insert(settings.testValues.yesterday,
+			function(err) {
 				assert.isNull(err, 'Insert callback returns no error');
-				db.insert(settings.testValues.today, function(err) {
-					assert.isNull(err, 'Insert callback returns no error');
-					db.insert(settings.testValues.tomorrow, function(err) {
+				db.insert(settings.testValues.today,
+					function(err) {
 						assert.isNull(err, 'Insert callback returns no error');
-						db.insert(settings.testValues.max, function(err) {
+					db.insert(settings.testValues.tomorrow,
+						function(err) {
 							assert.isNull(err, 'Insert callback returns no error');
-							db.insert(settings.testValues.min, function(err) {
+						db.insert(settings.testValues.max,
+							function(err) {
 								assert.isNull(err, 'Insert callback returns no error');
-								done();
+							db.insert(settings.testValues.min,
+								function(err) {
+									assert.isNull(err, 'Insert callback returns no error');
+									done();
 							});
 						});
 					});
@@ -34,15 +39,20 @@ describe('Database', function() {
 				settings.testValues.tomorrow.date + 1, function(rows) {
 				assert.equal(rows.length, 5);
 				assert.deepEqual(rows[0],
-					settings.testValues.yesterday, 'Yesterdays date should come back');
+					settings.testValues.yesterday,
+					'Yesterdays date should come back');
 				assert.deepEqual(rows[1],
-					settings.testValues.today, 'Todays date should come back');
+					settings.testValues.today,
+					'Todays date should come back');
 				assert.deepEqual(rows[2],
-					settings.testValues.tomorrow, 'Tomorrows date should come back');
+					settings.testValues.tomorrow,
+					'Tomorrows date should come back');
 				assert.deepEqual(rows[3],
-					settings.testValues.max, 'Max value should come back');
+					settings.testValues.max,
+					'Max value should come back');
 				assert.deepEqual(rows[4],
-					settings.testValues.min, 'Min value should come back');
+					settings.testValues.min,
+					'Min value should come back');
 				done();
 			});
 		});
