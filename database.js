@@ -1,82 +1,106 @@
-var fs = require("fs");
-var sqlite3 = require("sqlite3").verbose();
-var settings = require('./settings.js');
+(function() {
+  'use strict';
+  let fs = require('fs');
+  let sqlite3 = require('sqlite3').verbose();
+  let settings = require('./settings.js');
 
-var Database = function() {
-	var scope = this;
-	var insertStatement;
-	var selectStatement;
-	var db = null;
+  class Database {
 
-	this.init = function() {
-		if(!global.db) {
-			if(!fs.existsSync(settings.DATABASE_FILE)) {
-				var err = fs.writeFileSync(settings.DATABASE_FILE, '', { flags: 'wx' });
-				if(err) { console.log(err); }
-			}
-			global.db = new sqlite3.Database(settings.DATABASE_FILE);
-		}
-		db = global.db;
-		this.createTable();
-		insertStatement = db.prepare("INSERT INTO temperature (date, temperature) VALUES($date, $temperature)");
-		selectStatement = db.prepare("SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd");
-	};
+    constructor() {
+      this.insertStatement = null;
+      this.selectSTatement = null;
+      this.db = null;
+    }
 
-	this.createTable = function() {
-		db.serialize(function() {
-			db.run("CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)");
-		});
-	};
+    init() {
+      if (!global.db) {
+        if (!fs.existsSync(settings.DATABASE_FILE)) {
+          let err = fs.writeFileSync(settings.DATABASE_FILE, '', {
+            flags: 'wx',
+          });
+          if (err) {
+            console.log(err);
+          }
+        }
+        global.db = new sqlite3.Database(settings.DATABASE_FILE);
+      }
+      this.db = global.db;
+      this.createTable();
+      this.insertStatement = this.db.prepare('INSERT INTO temperature (date, temperature) VALUES($date, $temperature)');
+      this.selectStatement = this.db.prepare('SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd');
+    }
 
-	this.insert = function(data, callback) {
-		insertStatement.run({$date:data.date, $temperature:data.temperature}, function(err) {
-    	if(err) { console.log(err); }
-			callback(err);
-		});
-	};
+    createTable() {
+      this.db.serialize(() => {
+        this.db.run('CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)');
+      });
+    }
 
-	this.get = function(dateStart, dateEnd, callback) {
-		selectStatement.all({$dateStart:dateStart, $dateEnd:dateEnd}, function(err, results) {
-			if(err) { console.log(err); }
-			callback(results);
-  	});
-	};
+    insert(data, callback) {
+      this.insertStatement.run({
+        $date: data.date,
+        $temperature: data.temperature,
+      }, function(err) {
+        if (err) {
+          console.log(err);
+        }
+        callback(err);
+      });
+    }
 
-	this.extremes = function(dateStart, dateEnd, callback) {
-		var extremes = {
-			min: {},
-			max: {}
-		};
+    get(dateStart, dateEnd, callback) {
+      this.selectStatement.all({
+        $dateStart: dateStart,
+        $dateEnd: dateEnd,
+      }, function(err, results) {
+        if (err) {
+          console.log(err);
+        }
+        callback(results);
+      });
+    }
 
-		var filterQuery = dateStart || dateEnd ? " WHERE" : "";
-		if(dateStart) {
-			filterQuery += " date >= " + dateStart.toString();
-		}
-		if(dateEnd) {
-			if(dateStart) {
-				filterQuery += " AND";
-			}
-			filterQuery += " date < " + dateEnd.toString();
-		}
+    extremes(dateStart, dateEnd, callback) {
+      let extremes = {
+        min: {},
+        max: {},
+      };
 
-		db.get('SELECT date, MIN(temperature) as temperature FROM temperature' + filterQuery, function(err, row) {
-			if(err) { console.log(err); }
-			extremes.min = row;
-			db.get('SELECT date, MAX(temperature) as temperature FROM temperature' + filterQuery, function(err, row) {
-				if(err) { console.log(err); }
-				extremes.max = row;
-				callback(extremes);
-			});
-		});
-	};
+      let filterQuery = dateStart || dateEnd ? ' WHERE' : '';
+      if (dateStart) {
+        filterQuery += ' date >= ' + dateStart.toString();
+      }
+      if (dateEnd) {
+        if (dateStart) {
+          filterQuery += ' AND';
+        }
+        filterQuery += ' date < ' + dateEnd.toString();
+      }
 
-	this.getLastEntry = function(callback) {
-		db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
-			if(err) { console.log(err); }
-			callback(row);
-		});
-	};
+      this.db.get('SELECT date, MIN(temperature) as temperature FROM temperature' + filterQuery, (err, row) => {
+        if (err) {
+          console.log(err);
+        }
+        extremes.min = row;
+        this.db.get('SELECT date, MAX(temperature) as temperature FROM temperature' + filterQuery, (err, row) => {
+          if (err) {
+            console.log(err);
+          }
+          extremes.max = row;
+          callback(extremes);
+        });
+      });
+    }
 
-};
+    getLastEntry(callback) {
+      this.db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
+        if (err) {
+          console.log(err);
+        }
+        callback(row);
+      });
+    }
+  }
 
-module.exports = new Database();
+  module.exports = new Database();
+}());
