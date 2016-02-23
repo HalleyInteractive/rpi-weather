@@ -3,110 +3,122 @@ var assert = require('chai').assert;
 var settings = require('../settings.js');
 var request = require('request');
 var server = null;
-var base_url = 'http://localhost:' + settings.server_port;
+var baseUrl = 'http://localhost:' + settings.SERVER_PORT;
 
-describe("Webserver for the API", function() {
+describe('Webserver for the API', function() {
 
-	it("Should start a webserver for the weather API and add a few readings", function(done) {
+	it('Should start a webserver for the weather API and add a few readings',
+	function(done) {
 		server = require('./../server.js');
 		done();
 	});
 
-	it("Should return last temperature entry", function(done) {
-		request(base_url + '/api/', function(error, response, body) {
+	it('Should return last temperature entry', function(done) {
+		request(baseUrl + '/api/', function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
-			assert.deepEqual(JSON.parse(response.body), settings.test_values.tomorrow);
+			assert.deepEqual(JSON.parse(response.body),
+				settings.testValues.tomorrow);
 			done();
 		});
 	});
 
-	it("Should return todays entries", function(done){
-		request(base_url + '/api/today', function(error, response, body) {
+	it('Should return todays entries', function(done){
+		request(baseUrl + '/api/today', function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				[
-					settings.test_values.today,
-					settings.test_values.max,
-					settings.test_values.min
+					settings.testValues.today,
+					settings.testValues.max,
+					settings.testValues.min
 				]);
 			done();
 		});
 	});
 
-	it("Should return this weeks entries", function(done){
-		request(base_url + '/api/week/', function(error, response, body) {
+	it('Should return this weeks entries', function(done){
+		request(baseUrl + '/api/week/', function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				[
-					settings.test_values.yesterday,
-					settings.test_values.today,
-					settings.test_values.max,
-					settings.test_values.min
+					settings.testValues.yesterday,
+					settings.testValues.today,
+					settings.testValues.max,
+					settings.testValues.min
 				]);
 			done();
 		});
 	});
 
-	it("Should return extremes", function(done){
-		request(base_url + '/api/extremes/', function(error, response, body) {
+	it('Should return extremes', function(done){
+		request(baseUrl + '/api/extremes/', function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				{
-					max: settings.test_values.max,
-					min: settings.test_values.min
+					max: settings.testValues.max,
+					min: settings.testValues.min
 				});
 			done();
 		});
 	});
 
-	it("Should return filtered extremes", function(done) {
+	it('Should return filtered extremes', function(done) {
 
-		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
-		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+		var yesterday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY -
+		settings.MILLISECONDS_IN_DAY;
 
-		request(base_url + '/api/extremes/' + yesterday + '/' + just_before_today, function(error, response, body) {
+		var justBeforeToday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY - 1000;
+
+		request(baseUrl + '/api/extremes/' + yesterday + '/' + justBeforeToday,
+		function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				{
-					max: settings.test_values.yesterday,
-					min: settings.test_values.yesterday
+					max: settings.testValues.yesterday,
+					min: settings.testValues.yesterday
 				});
 			done();
 		});
 	});
 
-	it("Should return yesterdays entries", function(done) {
+	it('Should return yesterdays entries', function(done) {
 
-		var yesterday = settings.now.getTime() - settings.milliseconds_today - settings.milliseconds_in_day;
-		var just_before_today = settings.now.getTime() - settings.milliseconds_today - 1000;
+		var yesterday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY -
+		settings.MILLISECONDS_IN_DAY;
 
-		request(base_url + '/api/' + yesterday + '/' + just_before_today, function(error, response, body) {
+		var justBeforeToday = settings.now.getTime() -
+		settings.MILLISECONDS_TODAY - 1000;
+
+		request(baseUrl + '/api/' + yesterday + '/' + justBeforeToday,
+		function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				[
-					settings.test_values.yesterday
+					settings.testValues.yesterday
 				]);
 			done();
 		});
 	});
 
-	it("Should return yesterdays and todays entries", function(done) {
+	it('Should return yesterdays and todays entries', function(done) {
 
-		request(base_url + '/api/24hours', function(error, response, body) {
+		request(baseUrl + '/api/24hours', function(error, response) {
 			assert.isNull(error);
 			assert.equal(response.statusCode, 200);
 			assert.deepEqual(JSON.parse(response.body),
 				[
-					settings.test_values.yesterday,
-					settings.test_values.today,
-					settings.test_values.max,
-					settings.test_values.min
+					settings.testValues.yesterday,
+					settings.testValues.today,
+					settings.testValues.max,
+					settings.testValues.min
 				]);
 			done();
 		});

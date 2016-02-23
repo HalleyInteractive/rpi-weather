@@ -5,79 +5,84 @@ var fs = require('fs');
 
 before(function() {
 
-	console.log("SETUP");
-
-	settings.database_file = 'test_database.db';
-	var dbexists = fs.existsSync(settings.database_file);
+	settings.DATABASE_FILE = 'test_database.db';
+	var dbexists = fs.existsSync(settings.DATABASE_FILE);
 
 	settings.now = new Date();
-	settings.milliseconds_today = ((settings.now.getHours() * 60 * 60) + (settings.now.getMinutes() * 60) + settings.now.getSeconds()) * 1000;
-	//settings.milliseconds_in_day = 60*60*24*1000;
+	settings.MILLISECONDS_TODAY = ((settings.now.getHours() * 60 * 60) +
+	(settings.now.getMinutes() * 60) + settings.now.getSeconds()) * 1000;
+	//settings.MILLISECONDS_IN_DAY = 60*60*24*1000;
 
-	settings.test_values = {
+	settings.testValues = {
 		yesterday: {
-			date: settings.now.getTime() - settings.milliseconds_in_day + 120000,
+			date: settings.now.getTime() -
+			settings.MILLISECONDS_IN_DAY +120000,
 			temperature: 20
 		},
 		today: {
-			date: settings.now.getTime() - settings.milliseconds_today,
+			date: settings.now.getTime() - settings.MILLISECONDS_TODAY,
 			temperature: 21
 		},
 		max: {
-			date: settings.now.getTime() - settings.milliseconds_today - 1,
+			date: settings.now.getTime() - settings.MILLISECONDS_TODAY - 1,
 			temperature: 28
 		},
 		min: {
-			date: settings.now.getTime() - settings.milliseconds_today - 2,
+			date: settings.now.getTime() - settings.MILLISECONDS_TODAY - 2,
 			temperature: 1
 		},
 		tomorrow: {
-			date: settings.now.getTime() - settings.milliseconds_today + (settings.milliseconds_in_day * 1.5),
+			date: settings.now.getTime() - settings.MILLISECONDS_TODAY +
+			(settings.MILLISECONDS_IN_DAY * 1.5),
 			temperature: 22
 		}
 	};
 
-	it("Yesterday, today and tomorrow should have different dates", function(done) {
+	it('Yesterday, today and tomorrow should have different dates',
+	function(done) {
 		assert.notEqual(
-			new Date(settings.test_values.today.date).getDate(),
-			new Date(settings.test_values.yesterday.date).getDate()
+			new Date(settings.testValues.today.date).getDate(),
+			new Date(settings.testValues.yesterday.date).getDate()
 		);
 		assert.notEqual(
-			new Date(settings.test_values.today.date).getDate(),
-			new Date(settings.test_values.tomorrow.date).getDate()
+			new Date(settings.testValues.today.date).getDate(),
+			new Date(settings.testValues.tomorrow.date).getDate()
 		);
 		assert.equal(
-			new Date(settings.test_values.yesterday.date).getDate(),
+			new Date(settings.testValues.yesterday.date).getDate(),
 			new Date(new Date().getTime() - (60*60*24*1000) - 1).getDate()
 		);
 		assert.equal(
-			new Date(settings.now.getTime() - settings.milliseconds_today).getSeconds(),
+			new Date(settings.now.getTime() -
+			settings.MILLISECONDS_TODAY).getSeconds(),
 			0
 		);
 		assert.equal(
-			new Date(settings.now.getTime() - settings.milliseconds_today).getMinutes(),
+			new Date(settings.now.getTime() -
+			settings.MILLISECONDS_TODAY).getMinutes(),
 			0
 		);
 		assert.equal(
-			new Date(settings.now.getTime() - settings.milliseconds_today).getHours(),
+			new Date(settings.now.getTime() -
+			settings.MILLISECONDS_TODAY).getHours(),
 			0
 		);
 		done();
 	});
 
-	it("should not have a test database file", function(done) {
-		assert.isFalse(dbexists, "Database does not exist");
+	it('should not have a test database file', function(done) {
+		assert.isFalse(dbexists, 'Database does not exist');
 		done();
 	});
 
-	it("should have created a database file", function(done) {
+	it('should have created a database file', function(done) {
 		db.init();
-		var dbexists = fs.existsSync(settings.database_file);
+		var dbexists = fs.existsSync(settings.DATABASE_FILE);
 		assert.isTrue(dbexists);
 		done();
 	});
 
-	it("should not have any rows", function(done) {
+	it('should not have any rows', function(done) {
 		db.get(0, 99999999999, function(rows) {
 			assert.equal(rows.length, 0);
 			done();
@@ -88,12 +93,10 @@ before(function() {
 
 after(function() {
 
-	console.log("TEARDOWN");
+	fs.unlinkSync(settings.DATABASE_FILE);
+	var dbexists = fs.existsSync(settings.DATABASE_FILE);
 
-	fs.unlinkSync(settings.database_file);
-	var dbexists = fs.existsSync(settings.database_file);
-
-	it("should have removed it's test database file", function(done) {
+	it('should have removed it\'s test database file', function(done) {
 		assert.isFalse(dbexists);
 		done();
 	});
