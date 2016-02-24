@@ -39,7 +39,7 @@
     let now = new Date();
     db.get(now.getTime() - settings.MILLISECONDS_IN_DAY, now.getTime(),
     (r) => {
-      res.render('chart', {'rows': r });
+      res.render('chart', { 'rows': r });
     });
   });
 
