@@ -1,30 +1,34 @@
-var Temp = require('./temperature.js');
-var db = require('./database.js');
-var tmpRead = new Temp();
-var lastTemperature = null;
-var server = require('./server.js');
+(function() {
+  'use strict';
 
-db.init();
+  const temperature = require('./temperature.js');
+  const db = require('./database.js');
+  const server = require('./server.js');
 
-setInterval(readTemperature.bind(this), 10000);
+  let lastTemperature = null;
 
-/**
-* Reads the temperature value from the module
-*/
-function readTemperature() {
-  tmpRead.readTemperature(checkTemperatureReading.bind(this));
-}
+  db.init();
 
-/**
-* Checks if temeperature is different from last reading.
-* Saves reading if needed
-* @param {object} data Temperature reading including date and temperature
-*/
-function checkTemperatureReading(data) {
-  if (data !== lastTemperature) {
-    lastTemperature = data;
-    db.insert({ date: new Date().getTime(), temperature: data },
-		function() {});
-    server.update(data);
+  setInterval(readTemperature.bind(this), 10000);
+
+  /**
+  * Reads the temperature value from the module
+  */
+  function readTemperature() {
+    temperature.readTemperature(checkTemperatureReading.bind(this));
   }
-}
+
+  /**
+  * Checks if temeperature is different from last reading.
+  * Saves reading if needed
+  * @param {object} data Temperature reading including date and temperature
+  */
+  function checkTemperatureReading(data) {
+    if (data !== lastTemperature) {
+      lastTemperature = data;
+      db.insert({ date: new Date().getTime(), temperature: data },
+  		function() {});
+      server.update(data);
+    }
+  }
+})();

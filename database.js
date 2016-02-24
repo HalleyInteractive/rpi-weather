@@ -1,8 +1,8 @@
 (function() {
   'use strict';
-  let fs = require('fs');
-  let sqlite3 = require('sqlite3').verbose();
-  let settings = require('./settings.js');
+  const fs = require('fs');
+  const sqlite3 = require('sqlite3').verbose();
+  const settings = require('./settings.js');
 
   class Database {
 
