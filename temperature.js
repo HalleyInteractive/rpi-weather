@@ -1,43 +1,69 @@
-var fs = require('fs');
+(function() {
+  'use strict';
 
-var Temperature = function() {
+  let fs = require('fs');
 
-	var onewirePath = '/sys/bus/w1/devices/28-00047573c7ff/w1_slave';
-	var scope = this;
-	var temperatureRegex = new RegExp(/t=([0-9]+)/);
+  const TEMPERATURE_REGEX = new RegExp(/t=([0-9]+)/);
+  const ONEWIRE_PATH = '/sys/bus/w1/devices/28-00047573c7ff/w1_slave';
 
-	this.getTemperatureValue = function(data) {
-		if(temperatureRegex.test(data)) {
-			var matches = data.match(temperatureRegex);
-			if(matches.length > 1) {
-				return matches[1];
-			}
-		}
-		return undefined;
-	};
+  class Temperature {
 
-	this.getCelciusValue = function(value) {
-		return this.roundHalf((Math.round(parseInt(value) / 100)/10).toFixed(1));
-	};
+    /**
+    * getTemperatureValue
+    * Checks data/string for a temperature value and returns that value
+    * @param data {string} String of data from the onewire file
+    * @return {string} temperature value
+    **/
+    getTemperatureValue(data) {
+      if(TEMPERATURE_REGEX.test(data)) {
+        let matches = data.match(TEMPERATURE_REGEX);
+        if(matches.length > 1) {
+          return matches[1];
+        }
+      }
+      return undefined;
+    }
 
-	this.roundHalf = function(num) {
-    return Math.round(num*2)/2;
-	};
+    /**
+    * getCelciusValue
+    * Returns the celcius value for the given Fahrenheit input
+    * @param {string} String representing a temperature in fahrenheit
+    * @return {string} Celcius value
+    **/
+    getCelciusValue(value) {
+      return this.roundHalf((Math.round(parseInt(value) / 100) / 10).toFixed(1));
+    }
 
-	this.readTemperature = function(cb, path) {
-		if(path === undefined) {
-			path = onewirePath;
-		}
-		if(fs.existsSync(path)) {
-			fs.readFile(path, 'utf8', function(err, data) {
-				if(err) { throw err; }
-				cb(scope.getCelciusValue(scope.getTemperatureValue(data)));
-			});
-		} else {
-			throw new Error('Onewire file doesn\'t exist');
-		}
-	};
+    /**
+    * roundHalf
+    * Rounds a given floating number to it's closes .5 value
+    * @param num {float} Floating number
+    * @return {float} Floating number rounded to closest .5 value
+    **/
+    roundHalf(num) {
+      return Math.round(num * 2) / 2;
+    }
 
-};
-
-module.exports = Temperature;
+    /**
+    * readTemperature
+    * Reads the temperature from a onewire file
+    * @param {function}
+    **/
+    readTemperature(cb, path) {
+      if(path === undefined) {
+        path = ONEWIRE_PATH;
+      }
+      if(fs.existsSync(path)) {
+        fs.readFile(path, 'utf8', (err, data) => {
+          if(err) {
+            throw err;
+          }
+          cb(this.getCelciusValue(this.getTemperatureValue(data)));
+        });
+      } else {
+        throw new Error('Onewire file doesn\'t exist');
+      }
+    }
+  }
+  module.exports = new Temperature();
+})();

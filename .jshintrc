@@ -6,6 +6,8 @@
     "require",
     "console",
     "global",
-    "module"
+    "module",
+    "setInterval",
+    "process"
   ]
 }
