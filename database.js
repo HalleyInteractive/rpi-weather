@@ -4,14 +4,27 @@
   const sqlite3 = require('sqlite3').verbose();
   const settings = require('./settings.js');
 
+  /**
+  * @class Database
+  * Does all communication with the database
+  */
   class Database {
 
+    /**
+    * @constructor
+    * Initialises properties
+    */
     constructor() {
       this.insertStatement = null;
       this.selectSTatement = null;
       this.db = null;
     }
 
+    /**
+    * @method init
+    * Creates database file if needed and prepares statements
+    * database connection is stored in global.db
+    */
     init() {
       if (!global.db) {
         if (!fs.existsSync(settings.DATABASE_FILE)) {
@@ -30,12 +43,25 @@
       this.selectStatement = this.db.prepare('SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd');
     }
 
+    /**
+    * @method createTable
+    * Creates the temperature TABLE
+    * @private
+    */
     createTable() {
       this.db.serialize(() => {
         this.db.run('CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)');
       });
     }
 
+    /**
+    * @method insert
+    * Adds a temperature reading to the Database
+    * @param data {object} Date and temperature object
+    * @property {number} data.date - Date of the temperature reading
+    * @property {number} data.temperature - Temperature value
+    * @param callback {Function} Is called after the row has been inserted
+    */
     insert(data, callback) {
       this.insertStatement.run({
         $date: data.date,
@@ -48,6 +74,13 @@
       });
     }
 
+    /**
+    * @method get
+    * Returns rows from the database
+    * @param dateStart {number} Start date of the date range to select
+    * @param dateEnd {number} End date of the date range to select
+    * @param callback {Function} Is called with the rows from the select query
+    */
     get(dateStart, dateEnd, callback) {
       this.selectStatement.all({
         $dateStart: dateStart,
@@ -60,6 +93,14 @@
       });
     }
 
+    /**
+    * @method extremes
+    * Returns a min and max temperature from the database
+    * Returned object will have min and max properties
+    * @param dateStart {number} Start date of the date range to select
+    * @param dateEnd {number} End date of the date range to select
+    * @param callback {Function} Is called with the rows from the select query
+    */
     extremes(dateStart, dateEnd, callback) {
       let extremes = {
         min: {},
@@ -92,6 +133,11 @@
       });
     }
 
+    /**
+    * @method getLastEntry
+    * Returns THE last entry in the database
+    * @param callback {Function} Is called with the row from the select query
+    */
     getLastEntry(callback) {
       this.db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
         if (err) {
