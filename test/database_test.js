@@ -1,5 +1,5 @@
-var db = require('./../database.js');
-var settings = require('./../settings.js');
+var db = require('./../src/database.js');
+var settings = require('./../src/settings.js');
 var assert = require('chai').assert;
 var fs = require('fs');
 
