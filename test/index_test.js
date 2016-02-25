@@ -1,4 +1,4 @@
-var temperature = require('./../temperature.js');
+var temperature = require('./../src/temperature.js');
 var assert = require('chai').assert;
 
 describe('Temperature class', function() {

@@ -1,6 +1,6 @@
 
 var assert = require('chai').assert;
-var settings = require('../settings.js');
+var settings = require('../src/settings.js');
 var request = require('request');
 var server = null;
 var baseUrl = 'http://localhost:' + settings.SERVER_PORT;
@@ -9,7 +9,7 @@ describe('Webserver for the API', function() {
 
 	it('Should start a webserver for the weather API and add a few readings',
 	function(done) {
-		server = require('./../server.js');
+		server = require('./../src/server.js');
 		done();
 	});
 
