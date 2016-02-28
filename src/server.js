@@ -11,9 +11,13 @@
   const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
 
-  db.init();
+  function init() {
+    db.init();
+    api.init();
+    server.listen(port);
+  }
 
-  app.use('/api', api);
+  app.use('/api', api.router);
   app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
   app.set('view engine', 'handlebars');
 
@@ -44,11 +48,6 @@
   });
 
   /**
-  * Start server
-  */
-  server.listen(port);
-
-  /**
   * Public function to update all connected clients with a new temperature
   * @param {number} t Temperature to send out to all clients
   */
@@ -58,4 +57,5 @@
 
   // Make update publically available
   module.exports.update = update;
+  module.exports.init = init;
 })();

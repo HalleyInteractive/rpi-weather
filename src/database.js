@@ -39,8 +39,25 @@
       }
       this.db = global.db;
       this.createTable();
-      this.insertStatement = this.db.prepare('INSERT INTO temperature (date, temperature) VALUES($date, $temperature)');
-      this.selectStatement = this.db.prepare('SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd');
+      this.insertStatement = this.db.prepare('INSERT INTO temperature ' +
+        '(device_id, date, temperature) VALUES($device_id, $date, $temperature)');
+      this.selectStatement = this.db.prepare('SELECT date, temperature FROM ' +
+        'temperature WHERE date >= $dateStart AND date <= $dateEnd');
+
+      this.addDevice();
+    }
+
+    addDevice() {
+      let uuidStatement =
+        this.db.prepare('INSERT INTO device (uuid) VALUES ($uuid)');
+      uuidStatement.run({$uuid: settings.DEVICE_UUID});
+      this.db.get('SELECT id FROM device WHERE uuid = \'' +
+        settings.DEVICE_UUID + '\'', (err, row) => {
+        if (err) {
+          console.log(err);
+        }
+        settings.DEVICE_ID = row.id;
+      });
     }
 
     /**
@@ -50,7 +67,21 @@
     */
     createTable() {
       this.db.serialize(() => {
-        this.db.run('CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS device (id INTEGER PRIMARY ' +
+        'KEY AUTOINCREMENT UNIQUE NOT NULL, name VARCHAR (56) DEFAULT ' +
+        '\'No name\', uuid VARCHAR (36) UNIQUE ON CONFLICT IGNORE NOT NULL);');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS temperature ' +
+        '(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, device_id ' +
+        'INTEGER REFERENCES device (id) ON DELETE CASCADE ON UPDATE ' +
+        'CASCADE, date DATETIME, temperature NUMERIC);');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS humidity ' +
+        '(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, device_id ' +
+        'INTEGER REFERENCES device (id) ON DELETE CASCADE ON UPDATE ' +
+        'CASCADE, date DATETIME, humidity NUMERIC);');
+
       });
     }
 
@@ -64,6 +95,7 @@
     */
     insert(data, callback) {
       this.insertStatement.run({
+        $device_id: data.device_id,
         $date: data.date,
         $temperature: data.temperature,
       }, function(err) {

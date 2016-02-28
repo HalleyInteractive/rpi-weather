@@ -5,7 +5,9 @@
   const db = require('./database.js');
   const MILLISECOND_IN_DAY = 60 * 60 * 24 * 1000;
 
-  db.init();
+  function init() {
+    db.init();
+  }
 
   /**
   * Standard API route, returns last database entry
@@ -84,5 +86,6 @@
     });
   });
 
-  module.exports = router;
+  module.exports.router = router;
+  module.exports.init = init;
 }());
