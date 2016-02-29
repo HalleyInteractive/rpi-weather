@@ -54,7 +54,7 @@
     if (data !== lastTemperature) {
       lastTemperature = data;
       db.insert({
-        device_id: settings.DEVICE_ID,
+        device: settings.DEVICE_ID,
         date: new Date().getTime(),
         temperature: data
       },

@@ -41,7 +41,11 @@
   */
   app.get('/chart', (req, res) => {
     let now = new Date();
-    db.get(now.getTime() - settings.MILLISECONDS_IN_DAY, now.getTime(),
+    let query = {
+      startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
+      endDate: now.getTime()
+    };
+    db.get(query,
     (r) => {
       res.render('chart', { 'rows': r });
     });

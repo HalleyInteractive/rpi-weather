@@ -40,9 +40,11 @@
       this.db = global.db;
       this.createTable();
       this.insertStatement = this.db.prepare('INSERT INTO temperature ' +
-        '(device_id, date, temperature) VALUES($device_id, $date, $temperature)');
+        '(device_id, date, temperature) VALUES($device, $date, $temperature)');
+
       this.selectStatement = this.db.prepare('SELECT date, temperature FROM ' +
-        'temperature WHERE date >= $dateStart AND date <= $dateEnd');
+        'temperature WHERE date >= $dateStart AND date <= $dateEnd ' +
+        'AND devide_id = $device');
 
       this.addDevice();
     }
@@ -89,13 +91,14 @@
     * @method insert
     * Adds a temperature reading to the Database
     * @param data {object} Date and temperature object
+    * @property {string} data.device - Device id
     * @property {number} data.date - Date of the temperature reading
     * @property {number} data.temperature - Temperature value
     * @param callback {Function} Is called after the row has been inserted
     */
     insert(data, callback) {
       this.insertStatement.run({
-        $device_id: data.device_id,
+        $device: data.device,
         $date: data.date,
         $temperature: data.temperature,
       }, function(err) {
@@ -113,10 +116,11 @@
     * @param dateEnd {number} End date of the date range to select
     * @param callback {Function} Is called with the rows from the select query
     */
-    get(dateStart, dateEnd, callback) {
+    get(data, callback) {
       this.selectStatement.all({
-        $dateStart: dateStart,
-        $dateEnd: dateEnd,
+        $devide: data.device,
+        $dateStart: data.dateStart,
+        $dateEnd: data.dateEnd,
       }, function(err, results) {
         if (err) {
           console.log(err);
