@@ -10,6 +10,7 @@ describe('Webserver for the API', function() {
 	it('Should start a webserver for the weather API and add a few readings',
 	function(done) {
 		server = require('./../src/server.js');
+		server.init();
 		done();
 	});
 
