@@ -24,7 +24,7 @@
       return readout.temperature;
     }
 
-    himidity() {
+    humidity() {
       return readout.humidity;
     }
   }
