@@ -8,6 +8,7 @@
 
   let lastTemperature = null;
   let settings = require('./settings.js');
+  let dht22 = require('./dht22.js');
 
   /**
   * Initialises the app
@@ -16,7 +17,14 @@
     getDeviceUUID();
     db.init();
     server.init();
-    setInterval(readTemperature.bind(this), 10000);
+    //setInterval(readTemperature.bind(this), 10000);
+    setInterval(readDHT22.bind(this), 5000);
+  }
+
+  function readDHT22() {
+    dht22.read();
+    console.log('T: ' + dht22.temperature());
+    console.log('H: ' + dht22.humidity());
   }
 
   /**
