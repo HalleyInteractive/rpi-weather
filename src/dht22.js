@@ -10,7 +10,7 @@
   class DHT22 {
 
     constructor() {
-      let initialised = sensor.initialize(22, 4);
+      let initialised = sensor.initialize(22, 21);
       if(!initialised) {
         console.log('Failed to initialise sensor');
       }
