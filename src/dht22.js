@@ -7,10 +7,12 @@
     humidity: 0
   };
 
+  const GPIO_PIN = 4;
+
   class DHT22 {
 
     constructor() {
-      let initialised = sensor.initialize(22, 21);
+      let initialised = sensor.initialize(22, GPIO_PIN);
       if(!initialised) {
         console.log('Failed to initialise sensor');
       }
