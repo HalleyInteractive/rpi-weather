@@ -22,8 +22,6 @@
   function readDHT22() {
     dht22.read();
     checkTemperatureReading(dht22.temperature());
-    console.log('T: ' + dht22.temperature());
-    console.log('H: ' + dht22.humidity());
   }
 
   /**
