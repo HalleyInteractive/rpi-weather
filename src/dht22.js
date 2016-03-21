@@ -32,7 +32,11 @@
     }
 
     readout() {
-      return readout;
+      let tmpReadout = {
+        temperature: this.roundHalf(readout.temperature),
+        humidity: this.roundHalf(readout.humidity)
+      };
+      return tmpReadout;
     }
 
     /**

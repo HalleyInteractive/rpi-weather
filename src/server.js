@@ -56,10 +56,7 @@
   * @param {number} t Temperature to send out to all clients
   */
   function update(values) {
-    io.emit('update', {
-      'temperature': values.temperature,
-      'humidity': values.humidity
-    });
+    io.emit('update', values);
   }
 
   // Make update publically available
