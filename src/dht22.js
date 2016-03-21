@@ -19,7 +19,8 @@
     }
 
     read() {
-      sensor.read();
+      readout = sensor.read();
+      return readout;
     }
 
     temperature() {
