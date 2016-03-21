@@ -55,8 +55,11 @@
   * Public function to update all connected clients with a new temperature
   * @param {number} t Temperature to send out to all clients
   */
-  function update(t) {
-    io.emit('update', { 'temperature': t });
+  function update(values) {
+    io.emit('update', {
+      'temperature': values.temperature,
+      'humidity': values.humidity
+    });
   }
 
   // Make update publically available

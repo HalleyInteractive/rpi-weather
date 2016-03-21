@@ -31,6 +31,10 @@
       return this.roundHalf(readout.humidity);
     }
 
+    readout() {
+      return readout;
+    }
+
     /**
     * roundHalf
     * Rounds a given floating number to it's closes .5 value

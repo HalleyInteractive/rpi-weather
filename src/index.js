@@ -56,7 +56,7 @@
         temperature: data
       },
   		function() {});
-      server.update(data);
+      server.update(dht22.readout());
     }
   }
 
