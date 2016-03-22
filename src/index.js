@@ -1,13 +1,13 @@
 (function() {
   'use strict';
-
-  const temperature = require('./temperature.js');
+;
   const db = require('./database.js');
   const fs = require('fs');
   const server = require('./server.js');
 
-  let lastTemperature = null;
+  let lastTemperature = {};
   let settings = require('./settings.js');
+  let dht22 = require('./dht22.js');
 
   /**
   * Initialises the app
@@ -16,7 +16,12 @@
     getDeviceUUID();
     db.init();
     server.init();
-    setInterval(readTemperature.bind(this), 10000);
+    setInterval(readDHT22.bind(this), 5000);
+  }
+
+  function readDHT22() {
+    dht22.read();
+    checkTemperatureReading(dht22.temperature());
   }
 
   /**
@@ -37,14 +42,6 @@
     return deviceIdJson.uuid;
   }
 
-
-  /**
-  * Reads the temperature value from the module
-  */
-  function readTemperature() {
-    temperature.readTemperature(checkTemperatureReading.bind(this));
-  }
-
   /**
   * Checks if temeperature is different from last reading.
   * Saves reading if needed
@@ -59,7 +56,7 @@
         temperature: data
       },
   		function() {});
-      server.update(data);
+      server.update(dht22.readout());
     }
   }
 

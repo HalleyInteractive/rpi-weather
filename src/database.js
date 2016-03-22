@@ -44,7 +44,7 @@
 
       this.selectStatement = this.db.prepare('SELECT date, temperature FROM ' +
         'temperature WHERE date >= $dateStart AND date <= $dateEnd ' +
-        'AND devide_id = $device');
+        'AND device_id = $device');
 
       this.addDevice();
     }
@@ -118,7 +118,7 @@
     */
     get(data, callback) {
       this.selectStatement.all({
-        $devide: data.device,
+        $device: data.device,
         $dateStart: data.dateStart,
         $dateEnd: data.dateEnd,
       }, function(err, results) {
