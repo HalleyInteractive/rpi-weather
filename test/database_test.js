@@ -1,122 +1,62 @@
-var db = require('./../src/database.js');
-var settings = require('./../src/settings.js');
-var assert = require('chai').assert;
-var fs = require('fs');
+(function() {
+  'use strict';
+  let db = require('./../src/database.js');
+  let settings = require('./../src/settings.js');
+  let assert = require('chai').assert;
 
-settings.DATABASE_FILE = 'test_database.db';
+  settings.DATABASE_FILE = 'test_database.db';
 
-describe('Database', function() {
-	describe('insert', function() {
-		it('Should add three rows', function(done) {
-			db.init();
-			db.insert(settings.testValues.yesterday, function(err) {
-        assert.isNull(err, 'Insert callback returns no error');
-        db.insert(settings.testValues.today, function(err) {
-          assert.isNull(err, 'Insert callback returns no error');
-          db.insert(settings.testValues.tomorrow, function(err) {
-            assert.isNull(err, 'Insert callback returns no error');
-            db.insert(settings.testValues.max, function(err) {
-              assert.isNull(err, 'Insert callback returns no error');
-              db.insert(settings.testValues.min, function(err) {
-                assert.isNull(err, 'Insert callback returns no error');
-                done();
-							});
-						});
-					});
-				});
-			});
-		});
-	});
+  describe('Database', function() {
+  	describe('insert', function() {
+  		it('Should add yesterdays temperature', function() {
+  			db.init();
+  		   return db.insertTemperature(settings.testValues.temperature.yesterday);
+      });
+      it('Should add todays temperature', function() {
+        return db.insertTemperature(settings.testValues.temperature.today);
+      });
+  	});
+  });
+/*
+  describe('get', function() {
+  	it('yesterday, tomorrow should return two rows', function(done) {
+  		db.get(
+          {
+            device: settings.DEVICE_ID,
+            metric: 'temperature',
+            dateStart: settings.testValues.temperature.yesterday.date - 1,
+  			    dateEnd: settings.testValues.temperature.tomorrow.date + 1,
+          }, function(rows) {
+  			assert.equal(rows.length, 5);
+  			assert.deepEqual(rows[0],
+  				addQueryProperties(
+            settings.testValues.temperature.yesterday, 'temperature'),
+  				'Yesterdays date should come back');
+  			assert.deepEqual(rows[1],
+          addQueryProperties(
+  				  settings.testValues.temperature.today, 'temperature'),
+  				'Todays date should come back');
+  			done();
+  		});
+  	});
+  });
 
-	describe('get', function() {
-		it('yesterday, tomorrow should return all 5 rows', function(done) {
-			db.get(settings.testValues.yesterday.date - 1,
-				settings.testValues.tomorrow.date + 1, function(rows) {
-				assert.equal(rows.length, 5);
-				assert.deepEqual(rows[0],
-					settings.testValues.yesterday,
-					'Yesterdays date should come back');
-				assert.deepEqual(rows[1],
-					settings.testValues.today,
-					'Todays date should come back');
-				assert.deepEqual(rows[2],
-					settings.testValues.tomorrow,
-					'Tomorrows date should come back');
-				assert.deepEqual(rows[3],
-					settings.testValues.max,
-					'Max value should come back');
-				assert.deepEqual(rows[4],
-					settings.testValues.min,
-					'Min value should come back');
-				done();
-			});
-		});
+  describe('lastEntry', function() {
+  	it('should return the last dummy entry',
+  	function(done) {
+  		db.getLastEntry(function(row) {
+  			assert.deepEqual(row, settings.testValues.temperature.today);
+  			done();
+  		});
+  	});
+  });
 
-		it('should return yesterday', function(done){
-			db.get(settings.testValues.yesterday.date,
-				settings.testValues.yesterday.date,
-				function(rows) {
-					assert.equal(rows.length, 1);
-					assert.deepEqual(rows[0], settings.testValues.yesterday);
-					done();
-				});
-		});
-
-		it('should return tomorrow', function(done){
-			db.get(settings.testValues.tomorrow.date,
-				settings.testValues.tomorrow.date + settings.MILLISECONDS_TODAY,
-				function(rows) {
-					assert.equal(rows.length, 1);
-					assert.deepEqual(rows[0], settings.testValues.tomorrow);
-					done();
-				});
-		});
-
-	});
-
-	describe('extremes', function() {
-		it('should return all min and max temperature', function(done) {
-			db.extremes(null, null, function(extremes) {
-				assert.deepEqual(extremes,{
-					min: settings.testValues.min,
-					max: settings.testValues.max
-				});
-				done();
-			});
-		});
-
-		it('should return filtered min and max temperature', function(done) {
-			db.extremes(settings.testValues.tomorrow.date - 1, null,
-				function(extremes) {
-					assert.deepEqual(extremes, {
-						min: settings.testValues.tomorrow,
-						max: settings.testValues.tomorrow
-					});
-					done();
-				});
-		});
-
-		it('should return filtered min and max temperature', function(done) {
-			db.extremes(null, settings.testValues.yesterday.date + 1,
-				function(extremes) {
-					assert.deepEqual(extremes, {
-						min: settings.testValues.yesterday,
-						max: settings.testValues.yesterday
-					});
-					done();
-				});
-		});
-
-	});
-
-	describe('lastEntry', function() {
-		it('should return the last dummy entry',
-		function(done) {
-			db.getLastEntry(function(row) {
-				assert.deepEqual(row, settings.testValues.tomorrow);
-				done();
-			});
-		});
-	});
-
-});
+  function addQueryProperties(object, metric) {
+    let queryProperties = {
+      device: settings.DEVICE_ID,
+      metric: metric,
+    };
+    return Object.assign(queryProperties, object);
+  }
+  */
+})();

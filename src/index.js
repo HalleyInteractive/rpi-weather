@@ -52,6 +52,7 @@
       lastTemperature = data;
       db.insert({
         device: settings.DEVICE_ID,
+        metric: 'temperature',
         date: new Date().getTime(),
         temperature: data
       },

@@ -8,6 +8,8 @@
     "global",
     "module",
     "setInterval",
-    "process"
+    "process",
+    "describe",
+    "it"
   ]
 }

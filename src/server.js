@@ -29,7 +29,12 @@
   * /
   */
   app.get('/', (req, res) => {
-    db.getLastEntry((row) => {
+    let request = {
+      device: settings.DEVICE_ID,
+      metric: 'temperature',
+    };
+
+    db.getLastEntry(request, (row) => {
       row.scale = '˚';
       res.render('index', row);
     });
@@ -42,6 +47,8 @@
   app.get('/chart', (req, res) => {
     let now = new Date();
     let query = {
+      device: settings.DEVICE_ID,
+      metric: 'temperature',
       startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
       endDate: now.getTime()
     };
