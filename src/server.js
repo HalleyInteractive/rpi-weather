@@ -38,7 +38,13 @@
           humidity: humidityRow.humidity,
           scale: '˚'
         });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
       });
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 
@@ -48,15 +54,25 @@
   */
   app.get('/chart', (req, res) => {
     let now = new Date();
-    let query = {
-      device: settings.DEVICE_ID,
-      metric: 'temperature',
-      startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
-      endDate: now.getTime()
+    let queryDates = {
+      dateStart: now.getTime() - settings.MILLISECONDS_IN_DAY,
+      dateEnd: now.getTime()
     };
-    db.get(query,
-    (r) => {
-      res.render('chart', { 'rows': r });
+    db.getTemperature(queryDates)
+    .then((temperatureRows) => {
+      db.getHumidity(queryDates)
+      .then((humidityRows) => {
+        res.render('chart', {
+          'temperature': temperatureRows,
+          'humidity': humidityRows,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      });
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 
