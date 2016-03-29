@@ -29,14 +29,16 @@
   * /
   */
   app.get('/', (req, res) => {
-    let request = {
-      device: settings.DEVICE_ID,
-      metric: 'temperature',
-    };
-
-    db.getLastEntry(request, (row) => {
-      row.scale = '˚';
-      res.render('index', row);
+    db.getLastTemperatreEntry()
+    .then((temperatureRow) => {
+      db.getLastHumidityEntry()
+      .then((humidityRow) => {
+        res.render('index', {
+          temperature: temperatureRow.temperature,
+          humidity: humidityRow.humidity,
+          scale: '˚'
+        });
+      });
     });
   });
 
@@ -60,13 +62,22 @@
 
   /**
   * Public function to update all connected clients with a new temperature
-  * @param {number} t Temperature to send out to all clients
+  * @param {number} temperature Temperature to send out to all clients
   */
-  function update(values) {
-    io.emit('update', values);
+  function updateTemperature(temperature) {
+    io.emit('update', temperature);
+  }
+
+  /**
+  * Public function to update all connected clients with a new humidity
+  * @param {number} humidity Humidity to send out to all clients
+  */
+  function updateHumidity(humidity) {
+    io.emit('update', humidity);
   }
 
   // Make update publically available
-  module.exports.update = update;
+  module.exports.updateTemperature = updateTemperature;
+  module.exports.updateHumidity = updateHumidity;
   module.exports.init = init;
 })();
