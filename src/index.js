@@ -32,14 +32,13 @@
   */
   function getDeviceUUID() {
     if (!fs.existsSync('./device.json')) {
-      let uuid = require('node-uuid').v4();
       let device = {
-        uuid: uuid
+        uuid: require('node-uuid').v4(),
       };
-      fs.writeFileSync("device.json", JSON.stringify(device));
+      fs.writeFileSync('device.json', JSON.stringify(device));
     }
 
-    var deviceIdJson = require('./device.json');
+    let deviceIdJson = require('./device.json');
     settings.DEVICE_UUID = deviceIdJson.uuid;
     return deviceIdJson.uuid;
   }
@@ -47,14 +46,14 @@
   /**
   * Checks if temeperature is different from last reading.
   * Saves reading if needed
-  * @param {object} temperature Temperature reading including date and temperature
+  * @param {object} temperatureReading Temperature reading including date and temperature
   */
-  function checkTemperatureReading(temperature) {
-    if (temperature !== lastTemperature) {
-      lastTemperature = temperature;
+  function checkTemperatureReading(temperatureReading) {
+    if (temperatureReading !== lastTemperature) {
+      lastTemperature = temperatureReading;
       db.insertTemperature({
         date: new Date().getTime(),
-        temperature: temperature
+        temperature: temperatureReading,
       });
       server.update(dht22.readout());
     }
@@ -65,12 +64,12 @@
   * Saves reading if needed
   * @param {object} humidity Humidity reading including date and humidity
   */
-  function checkHumidityReading(humidity) {
-    if (humidity !== lastHumidity) {
-      lastHumidity = humidity;
+  function checkHumidityReading(temperatureReading) {
+    if (temperatureReading !== lastHumidity) {
+      lastHumidity = temperatureReading;
       db.insertHumidity({
         date: new Date().getTime(),
-        humidity: humidity
+        humidity: temperatureReading,
       });
       server.update(dht22.readout());
     }

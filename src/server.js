@@ -10,7 +10,7 @@
   const api = require('./api.js');
   const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
-  var path = require('path');
+  let path = require('path');
 
   function init() {
     db.init();
@@ -37,7 +37,7 @@
         res.render('index', {
           temperature: temperatureRow.temperature,
           humidity: humidityRow.humidity,
-          scale: '˚'
+          scale: '˚',
         });
       })
       .catch((error) => {
@@ -57,7 +57,7 @@
     let now = new Date();
     let queryDates = {
       dateStart: now.getTime() - settings.MILLISECONDS_IN_DAY,
-      dateEnd: now.getTime()
+      dateEnd: now.getTime(),
     };
     db.getTemperature(queryDates)
     .then((temperatureRows) => {
