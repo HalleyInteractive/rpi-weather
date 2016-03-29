@@ -29,7 +29,7 @@
   * /
   */
   app.get('/', (req, res) => {
-    db.getLastTemperatreEntry()
+    db.getLastTemperatureEntry()
     .then((temperatureRow) => {
       db.getLastHumidityEntry()
       .then((humidityRow) => {
