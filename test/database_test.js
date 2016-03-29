@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+
   let db = require('./../src/database.js');
   let settings = require('./../src/settings.js');
   let assert = require('chai').assert;
@@ -17,46 +18,38 @@
       });
   	});
   });
-/*
+
   describe('get', function() {
-  	it('yesterday, tomorrow should return two rows', function(done) {
-  		db.get(
-          {
-            device: settings.DEVICE_ID,
-            metric: 'temperature',
-            dateStart: settings.testValues.temperature.yesterday.date - 1,
-  			    dateEnd: settings.testValues.temperature.tomorrow.date + 1,
-          }, function(rows) {
-  			assert.equal(rows.length, 5);
-  			assert.deepEqual(rows[0],
-  				addQueryProperties(
-            settings.testValues.temperature.yesterday, 'temperature'),
-  				'Yesterdays date should come back');
-  			assert.deepEqual(rows[1],
-          addQueryProperties(
-  				  settings.testValues.temperature.today, 'temperature'),
-  				'Todays date should come back');
-  			done();
-  		});
+  	it('yesterday and today should be returned', function(done) {
+  		db.getTemperature({
+        dateStart: settings.testValues.temperature.yesterday.date - 1,
+  			dateEnd: settings.testValues.temperature.today.date + 1,
+      })
+      .then((rows) => {
+        assert.equal(rows.length, 2);
+        assert.deepEqual(rows[0], settings.testValues.temperature.today,
+          'Todays date should come back');
+      	assert.deepEqual(rows[1], settings.testValues.temperature.yesterday,
+      	   'Yesterdays date should be returned');
+        done();
+  		})
+      .catch((error) => {
+        done(error);
+      });
   	});
   });
 
   describe('lastEntry', function() {
   	it('should return the last dummy entry',
   	function(done) {
-  		db.getLastEntry(function(row) {
+  		db.getLastTemperatureEntry()
+      .then((row) => {
   			assert.deepEqual(row, settings.testValues.temperature.today);
   			done();
-  		});
+  		})
+      .catch((error) => {
+        done(error);
+      });
   	});
   });
-
-  function addQueryProperties(object, metric) {
-    let queryProperties = {
-      device: settings.DEVICE_ID,
-      metric: metric,
-    };
-    return Object.assign(queryProperties, object);
-  }
-  */
 })();

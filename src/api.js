@@ -13,8 +13,12 @@
   * Standard API route, returns last database entry
   */
   router.get('/', (req, res) => {
-    db.getLastEntry((row) => {
+    db.getLastTemperatureEntry()
+    .then((row) => {
       res.json(row);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 
@@ -23,8 +27,15 @@
   */
   router.get('/24hours', (req, res) => {
     let now = new Date();
-    db.get(now.getTime() - MILLISECOND_IN_DAY, now.getTime(), (rows) => {
+    db.getTemperature({
+      dateStart: now.getTime() - MILLISECOND_IN_DAY,
+      dateEnd: now.getTime()
+    })
+    .then((rows) => {
       res.json(rows);
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 

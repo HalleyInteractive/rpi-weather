@@ -113,41 +113,25 @@
     }
 
     insertHumidity(data, device) {
-      device = device === null ? settings.DEVICE_ID : device;
-      Object.assign(data, {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
         device: device,
         metric: 'humidity',
+        value: data.humidity,
       });
 
-      let promise = new Promise((resolve, reject) => {
-        this.insert(data)
-        .then(function() {
-          resolve();
-        })
-        .catch(function(error) {
-          reject(error);
-        });
-      });
-
-      return promise;
+      return this.insert(queryData);
     }
 
     insertTemperature(data, device) {
-      device = device === null ? settings.DEVICE_ID : device;
-      Object.assign(data, {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
         device: device,
         metric: 'temperature',
+        value: data.temperature,
       });
-      let promise = new Promise((resolve, reject) => {
-        this.insert(data)
-        .then(function() {
-          resolve();
-        })
-        .catch(function(error) {
-          reject(error);
-        });
-      });
-      return promise;
+
+      return this.insert(queryData);
     }
 
     /**
@@ -193,43 +177,23 @@
     }
 
     getTemperature(data, device) {
-      device = device === null ? settings.DEVICE_ID : device;
-      Object.assign(data, {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
         device: device,
         metric: 'temperature',
       });
 
-      let promise = new Promise((resolve, reject) => {
-        this.get(data)
-        .then(function(result) {
-          resolve(result);
-        })
-        .catch(function(error) {
-          reject(error);
-        });
-      });
-
-      return promise;
+      return this.get(queryData);
     }
 
     getHumidity(data, device) {
-      device = device === null ? settings.DEVICE_ID : device;
-      Object.assign(data, {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
         device: device,
         metric: 'humidity',
       });
 
-      let promise = new Promise((resolve, reject) => {
-        this.get(data)
-        .then(function(result) {
-          resolve(result);
-        })
-        .catch(function(error) {
-          reject(error);
-        });
-      });
-
-      return promise;
+      return this.get(queryData);
     }
 
     /**
@@ -274,15 +238,35 @@
       return promise;
     }
 
+    getLastTemperatureEntry(device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let data = {
+        device: device,
+        metric: 'temperature',
+      };
+
+      return this.getLastEntry(data);
+    }
+
+    getLastHumidityEntry(device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let data = {
+        device: device,
+        metric: 'humidity',
+      };
+
+      return this.getLastEntry(data);
+    }
+
     /**
     * @method getLastEntry
     * Returns THE last entry in the database
     * @param data {object} Date and temperature object
     * @property {string} data.device - Device id
     * @property {string} data.metric - Metric, temperature or humidity
-    * @param callback {Function} Is called with the row from the select query
+    * @return {Promise} Row from the select query
     */
-    getLastEntry(data, callback) {
+    getLastEntry(data) {
 
       let query = null;
 
@@ -294,14 +278,20 @@
           query = this.lastHumidityEntryQuery;
           break;
       }
-      if(query !== null) {
-        query.all({ $device: data.device }, function(err, result) {
-          if (err) {
-            console.log(err);
-          }
-          callback(result);
-        });
-      }
+
+      var promise = new Promise((resolve, reject) => {
+        if(query !== null) {
+          query.all({ $device: data.device }, function(err, result) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result[0]);
+            }
+          });
+        }
+      });
+
+      return promise;
     }
   }
 
