@@ -54,14 +54,13 @@
   */
   app.get('/chart', (req, res) => {
     let now = new Date();
-    let query = {
-      startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
-      endDate: now.getTime()
+    let queryDates = {
+      dateStart: now.getTime() - settings.MILLISECONDS_IN_DAY,
+      dateEnd: now.getTime()
     };
-
-    db.getTemperature(query)
+    db.getTemperature(queryDates)
     .then((temperatureRows) => {
-      db.getHumidity(query)
+      db.getHumidity(queryDates)
       .then((humidityRows) => {
         res.render('chart', {
           'temperature': temperatureRows,
