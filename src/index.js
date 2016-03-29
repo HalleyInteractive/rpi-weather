@@ -56,7 +56,7 @@
         date: new Date().getTime(),
         temperature: temperature
       });
-      server.updateTemperature(dht22.readout());
+      server.update(dht22.readout());
     }
   }
 
@@ -72,7 +72,7 @@
         date: new Date().getTime(),
         humidity: humidity
       });
-      server.updateHumidity(dht22.readout());
+      server.update(dht22.readout());
     }
   }
 

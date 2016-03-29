@@ -4,13 +4,11 @@
 		<script src="/socket.io/socket.io.js"></script>
 		<script>
 		  var socket = io.connect();
-		  socket.on('updateTemperature', function (data) {
-		    var temperature = document.getElementById('temperature-value');
+		  socket.on('update', function (data) {
+        var temperature = document.getElementById('temperature-value');
+        var humidity = document.getElementById('humidity-value');
 				temperature.innerHTML = data.temperature;
-		  });
-      socket.on('updateHumidity', function (data) {
-		    var humidity = document.getElementById('humidity-value');
-				humidity.innerHTML = data.humidity;
+        humidity.innerHTML = data.humidity;
 		  });
 		</script>
 		<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>

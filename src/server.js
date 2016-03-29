@@ -61,23 +61,14 @@
   });
 
   /**
-  * Public function to update all connected clients with a new temperature
-  * @param {number} temperature Temperature to send out to all clients
+  * Public function to update all connected clients with a new readouts
+  * @param {object} values Temperature and Humidity readout
   */
-  function updateTemperature(temperature) {
-    io.emit('update', temperature);
-  }
-
-  /**
-  * Public function to update all connected clients with a new humidity
-  * @param {number} humidity Humidity to send out to all clients
-  */
-  function updateHumidity(humidity) {
-    io.emit('update', humidity);
+  function update(values) {
+    io.emit('update', values);
   }
 
   // Make update publically available
-  module.exports.updateTemperature = updateTemperature;
-  module.exports.updateHumidity = updateHumidity;
+  module.exports.update = update;
   module.exports.init = init;
 })();
