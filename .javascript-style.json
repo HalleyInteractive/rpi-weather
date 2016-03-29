@@ -25,7 +25,8 @@
     "angular",
     "inject",
     "module",
-		"require"
+		"require",
+    "__dirname"
   ],
   "quotmark": true,
   "trailing": true,

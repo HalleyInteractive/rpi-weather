@@ -10,6 +10,7 @@
   const api = require('./api.js');
   const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
+  let path = require('path');
 
   function init() {
     db.init();
@@ -19,7 +20,7 @@
 
   app.use('/api', api.router);
   app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
-  app.set('view engine', 'handlebars');
+  app.set('views', path.resolve(__dirname) + '/views');
 
   // Static routes
   app.use('/css', express.static('static/css'));
@@ -36,7 +37,7 @@
         res.render('index', {
           temperature: temperatureRow.temperature,
           humidity: humidityRow.humidity,
-          scale: '˚'
+          scale: '˚',
         });
       })
       .catch((error) => {
@@ -56,7 +57,7 @@
     let now = new Date();
     let queryDates = {
       dateStart: now.getTime() - settings.MILLISECONDS_IN_DAY,
-      dateEnd: now.getTime()
+      dateEnd: now.getTime(),
     };
     db.getTemperature(queryDates)
     .then((temperatureRows) => {

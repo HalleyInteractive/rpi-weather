@@ -19,7 +19,7 @@
       .then((humidityRow) => {
         res.json({
           temperature: temperatureRow,
-        humidity: humidityRow,
+          humidity: humidityRow,
         });
       })
       .catch((error) => {
@@ -39,7 +39,7 @@
     let now = new Date();
     let queryDates = {
       dateStart: now.getTime() - MILLISECOND_IN_DAY,
-      dateEnd: now.getTime()
+      dateEnd: now.getTime(),
     };
 
     db.getTemperature(queryDates)

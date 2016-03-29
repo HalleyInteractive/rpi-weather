@@ -16,12 +16,32 @@
   		done();
   	});
 
-  	it('Should return last temperature entry', function(done) {
+    /*
+    it('Should return home page', function(done) {
+  		request(baseUrl + '/', function(error, response) {
+  			assert.isNull(error);
+  			assert.equal(response.statusCode, 200);
+  			done();
+  		});
+  	});
+
+    it('Should return the chart page', function(done) {
+  		request(baseUrl + '/chart', function(error, response) {
+  			assert.isNull(error);
+  			assert.equal(response.statusCode, 200);
+  			done();
+  		});
+  	});
+    */
+
+  	it('Should return last entries', function(done) {
   		request(baseUrl + '/api/', function(error, response) {
   			assert.isNull(error);
   			assert.equal(response.statusCode, 200);
   			assert.deepEqual(JSON.parse(response.body).temperature,
   				settings.testValues.temperature.today);
+        assert.deepEqual(JSON.parse(response.body).humidity,
+    			settings.testValues.humidity.today);
   			done();
   		});
   	});
@@ -35,6 +55,11 @@
   				[
             settings.testValues.temperature.today,
   					settings.testValues.temperature.yesterday,
+  				]);
+        assert.deepEqual(JSON.parse(response.body).humidity,
+  				[
+            settings.testValues.humidity.today,
+  					settings.testValues.humidity.yesterday,
   				]);
   			done();
   		});
