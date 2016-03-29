@@ -14,8 +14,17 @@
   */
   router.get('/', (req, res) => {
     db.getLastTemperatureEntry()
-    .then((row) => {
-      res.json(row);
+    .then((temperatureRow) => {
+      db.getLastHumidityEntry()
+      .then((humidityRow) => {
+        res.json({
+          temperature: temperatureRow,
+        humidity: humidityRow,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      });
     })
     .catch((error) => {
       res.status(500).send(error);
@@ -26,13 +35,25 @@
   * Get all temperature readings from the last 24 hours
   */
   router.get('/24hours', (req, res) => {
+
     let now = new Date();
-    db.getTemperature({
+    let queryDates = {
       dateStart: now.getTime() - MILLISECOND_IN_DAY,
       dateEnd: now.getTime()
-    })
-    .then((rows) => {
-      res.json(rows);
+    };
+
+    db.getTemperature(queryDates)
+    .then((temperatureRows) => {
+      db.getHumidity(queryDates)
+      .then((humidityRows) => {
+        res.json({
+          temperature: temperatureRows,
+          humidity: humidityRows,
+        });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
+      });
     })
     .catch((error) => {
       res.status(500).send(error);

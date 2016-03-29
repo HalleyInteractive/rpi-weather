@@ -20,18 +20,18 @@
   		request(baseUrl + '/api/', function(error, response) {
   			assert.isNull(error);
   			assert.equal(response.statusCode, 200);
-  			assert.deepEqual(JSON.parse(response.body),
+  			assert.deepEqual(JSON.parse(response.body).temperature,
   				settings.testValues.temperature.today);
   			done();
   		});
   	});
 
-  	it('Should return yesterdays and todays entries', function(done) {
-
+  	it('Should return yesterdays and todays temperature entries',
+    function(done) {
   		request(baseUrl + '/api/24hours', function(error, response) {
   			assert.isNull(error);
   			assert.equal(response.statusCode, 200);
-  			assert.deepEqual(JSON.parse(response.body),
+  			assert.deepEqual(JSON.parse(response.body).temperature,
   				[
             settings.testValues.temperature.today,
   					settings.testValues.temperature.yesterday,

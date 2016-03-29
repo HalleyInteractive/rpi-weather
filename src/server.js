@@ -49,14 +49,19 @@
   app.get('/chart', (req, res) => {
     let now = new Date();
     let query = {
-      device: settings.DEVICE_ID,
-      metric: 'temperature',
       startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
       endDate: now.getTime()
     };
-    db.get(query,
-    (r) => {
-      res.render('chart', { 'rows': r });
+    
+    db.getTemperature(query,
+    (temperatureRows) => {
+      db.getHumidity(query)
+      .then((humidityRows) => {
+        res.render('chart', {
+          'temperature': temperatureRows,
+          'humidity': humidityRows,
+        });
+      });
     });
   });
 
