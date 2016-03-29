@@ -10,6 +10,7 @@
     "setInterval",
     "process",
     "describe",
-    "it"
+    "it",
+    "__dirname"
   ]
 }
