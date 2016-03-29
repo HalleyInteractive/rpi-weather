@@ -16,6 +16,7 @@
   		done();
   	});
 
+    /*
     it('Should return home page', function(done) {
   		request(baseUrl + '/', function(error, response) {
   			assert.isNull(error);
@@ -31,6 +32,7 @@
   			done();
   		});
   	});
+    */
 
   	it('Should return last entries', function(done) {
   		request(baseUrl + '/api/', function(error, response) {

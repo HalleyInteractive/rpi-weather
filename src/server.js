@@ -10,6 +10,7 @@
   const api = require('./api.js');
   const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
+  var path = require('path');
 
   function init() {
     db.init();
@@ -19,7 +20,7 @@
 
   app.use('/api', api.router);
   app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
-  app.set('view engine', 'handlebars');
+  app.set('views', path.resolve(__dirname) + '/views');
 
   // Static routes
   app.use('/css', express.static('static/css'));
