@@ -38,7 +38,13 @@
           humidity: humidityRow.humidity,
           scale: '˚'
         });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
       });
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 
@@ -52,16 +58,22 @@
       startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
       endDate: now.getTime()
     };
-    
-    db.getTemperature(query,
-    (temperatureRows) => {
+
+    db.getTemperature(query)
+    .then((temperatureRows) => {
       db.getHumidity(query)
       .then((humidityRows) => {
         res.render('chart', {
           'temperature': temperatureRows,
           'humidity': humidityRows,
         });
+      })
+      .catch((error) => {
+        res.status(500).send(error);
       });
+    })
+    .catch((error) => {
+      res.status(500).send(error);
     });
   });
 
