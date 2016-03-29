@@ -15,7 +15,7 @@
     SERVER_PORT: 8080,
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
-    DEVICE_ID: -1
+    DEVICE_ID: -1,
   };
 
   module.exports = settings;

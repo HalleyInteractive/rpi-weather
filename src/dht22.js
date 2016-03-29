@@ -4,7 +4,7 @@
   let sensor = require('node-dht-sensor');
   let readout = {
     temperature: 0,
-    humidity: 0
+    humidity: 0,
   };
 
   const GPIO_PIN = 4;
@@ -34,7 +34,7 @@
     readout() {
       let tmpReadout = {
         temperature: this.roundHalf(readout.temperature),
-        humidity: this.roundHalf(readout.humidity)
+        humidity: this.roundHalf(readout.humidity),
       };
       return tmpReadout;
     }

@@ -24,6 +24,16 @@ before(function() {
   			date: settings.now.getTime() - settings.MILLISECONDS_TODAY,
   			temperature: 21,
   		},
+    },
+    humidity: {
+  		yesterday: {
+  			date: settings.now.getTime() - settings.MILLISECONDS_IN_DAY +120000,
+  			humidity: 40,
+  		},
+  		today: {
+  			date: settings.now.getTime() - settings.MILLISECONDS_TODAY,
+  			humidity: 41,
+  		},
     }
 	};
 
@@ -35,6 +45,14 @@ before(function() {
 		);
 		assert.equal(
 			new Date(settings.testValues.temperature.yesterday.date).getDate(),
+			new Date(new Date().getTime() - (60*60*24*1000) - 1).getDate()
+		);
+    assert.notEqual(
+			new Date(settings.testValues.humidity.today.date).getDate(),
+			new Date(settings.testValues.humidity.yesterday.date).getDate()
+		);
+		assert.equal(
+			new Date(settings.testValues.humidity.yesterday.date).getDate(),
 			new Date(new Date().getTime() - (60*60*24*1000) - 1).getDate()
 		);
 		assert.equal(

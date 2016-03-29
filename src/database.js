@@ -77,9 +77,9 @@
     addDevice(uuid) {
       let uuidQuery =
         this.db.prepare('INSERT INTO device (uuid) VALUES ($uuid)');
-      uuidQuery.run({$uuid: uuid});
+      uuidQuery.run({ $uuid: uuid });
       this.db.get('SELECT id FROM device WHERE uuid = \'' +
-        uuid + '\'', (err, row) => {
+      uuid + '\'', (err, row) => {
         if (err) {
           console.log(err);
         }
@@ -112,10 +112,10 @@
       });
     }
 
-    insertHumidity(data, device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    insertHumidity(data, deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
-        device: device,
+        device: deviceId,
         metric: 'humidity',
         value: data.humidity,
       });
@@ -123,10 +123,10 @@
       return this.insert(queryData);
     }
 
-    insertTemperature(data, device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    insertTemperature(data, deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
-        device: device,
+        device: deviceId,
         metric: 'temperature',
         value: data.temperature,
       });
@@ -148,7 +148,7 @@
 
       let query = null;
 
-      switch(data.metric) {
+      switch (data.metric) {
         case 'temperature':
           query = this.insertTemperatureQuery;
           break;
@@ -176,20 +176,20 @@
       return promise;
     }
 
-    getTemperature(data, device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    getTemperature(data, deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
-        device: device,
+        device: deviceId,
         metric: 'temperature',
       });
 
       return this.get(queryData);
     }
 
-    getHumidity(data, device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    getHumidity(data, deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
-        device: device,
+        device: deviceId,
         metric: 'humidity',
       });
 
@@ -210,7 +210,7 @@
 
       let query = null;
 
-      switch(data.metric) {
+      switch (data.metric) {
         case 'temperature':
           query = this.selectTemperatureQuery;
           break;
@@ -238,20 +238,20 @@
       return promise;
     }
 
-    getLastTemperatureEntry(device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    getLastTemperatureEntry(deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let data = {
-        device: device,
+        device: deviceId,
         metric: 'temperature',
       };
 
       return this.getLastEntry(data);
     }
 
-    getLastHumidityEntry(device) {
-      device = device === undefined ? settings.DEVICE_ID : device;
+    getLastHumidityEntry(deviceId) {
+      deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let data = {
-        device: device,
+        device: deviceId,
         metric: 'humidity',
       };
 
@@ -270,7 +270,7 @@
 
       let query = null;
 
-      switch(data.metric) {
+      switch (data.metric) {
         case 'temperature':
           query = this.lastTemperatureEntryQuery;
           break;
@@ -279,7 +279,7 @@
           break;
       }
 
-      var promise = new Promise((resolve, reject) => {
+      let promise = new Promise((resolve, reject) => {
         if(query !== null) {
           query.all({ $device: data.device }, function(err, result) {
             if (err) {
