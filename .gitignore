@@ -35,3 +35,5 @@ node_modules
 # Sqlite database
 weather.db
 test.db
+
+src/device.json

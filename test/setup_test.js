@@ -11,45 +11,30 @@ before(function() {
 	settings.now = new Date();
 	settings.MILLISECONDS_TODAY = ((settings.now.getHours() * 60 * 60) +
 	(settings.now.getMinutes() * 60) + settings.now.getSeconds()) * 1000;
-	//settings.MILLISECONDS_IN_DAY = 60*60*24*1000;
+  settings.DEVICE_UUID = 'test_devide_uuid';
+  settings.DEVICE_ID = 1;
 
 	settings.testValues = {
-		yesterday: {
-			date: settings.now.getTime() -
-			settings.MILLISECONDS_IN_DAY +120000,
-			temperature: 20
-		},
-		today: {
-			date: settings.now.getTime() - settings.MILLISECONDS_TODAY,
-			temperature: 21
-		},
-		max: {
-			date: settings.now.getTime() - settings.MILLISECONDS_TODAY - 1,
-			temperature: 28
-		},
-		min: {
-			date: settings.now.getTime() - settings.MILLISECONDS_TODAY - 2,
-			temperature: 1
-		},
-		tomorrow: {
-			date: settings.now.getTime() - settings.MILLISECONDS_TODAY +
-			(settings.MILLISECONDS_IN_DAY * 1.5),
-			temperature: 22
-		}
+    temperature: {
+  		yesterday: {
+  			date: settings.now.getTime() - settings.MILLISECONDS_IN_DAY +120000,
+  			temperature: 20,
+  		},
+  		today: {
+  			date: settings.now.getTime() - settings.MILLISECONDS_TODAY,
+  			temperature: 21,
+  		},
+    }
 	};
 
-	it('Yesterday, today and tomorrow should have different dates',
+	it('Yesterday, today should have different dates',
 	function(done) {
 		assert.notEqual(
-			new Date(settings.testValues.today.date).getDate(),
-			new Date(settings.testValues.yesterday.date).getDate()
-		);
-		assert.notEqual(
-			new Date(settings.testValues.today.date).getDate(),
-			new Date(settings.testValues.tomorrow.date).getDate()
+			new Date(settings.testValues.temperature.today.date).getDate(),
+			new Date(settings.testValues.temperature.yesterday.date).getDate()
 		);
 		assert.equal(
-			new Date(settings.testValues.yesterday.date).getDate(),
+			new Date(settings.testValues.temperature.yesterday.date).getDate(),
 			new Date(new Date().getTime() - (60*60*24*1000) - 1).getDate()
 		);
 		assert.equal(
@@ -80,13 +65,6 @@ before(function() {
 		var dbexists = fs.existsSync(settings.DATABASE_FILE);
 		assert.isTrue(dbexists);
 		done();
-	});
-
-	it('should not have any rows', function(done) {
-		db.get(0, 99999999999, function(rows) {
-			assert.equal(rows.length, 0);
-			done();
-		});
 	});
 
 });

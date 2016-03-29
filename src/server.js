@@ -11,9 +11,13 @@
   const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
 
-  db.init();
+  function init() {
+    db.init();
+    api.init();
+    server.listen(port);
+  }
 
-  app.use('/api', api);
+  app.use('/api', api.router);
   app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
   app.set('view engine', 'handlebars');
 
@@ -25,9 +29,16 @@
   * /
   */
   app.get('/', (req, res) => {
-    db.getLastEntry((row) => {
-      row.scale = '˚';
-      res.render('index', row);
+    db.getLastTemperatreEntry()
+    .then((temperatureRow) => {
+      db.getLastHumidityEntry()
+      .then((humidityRow) => {
+        res.render('index', {
+          temperature: temperatureRow.temperature,
+          humidity: humidityRow.humidity,
+          scale: '˚'
+        });
+      });
     });
   });
 
@@ -37,25 +48,36 @@
   */
   app.get('/chart', (req, res) => {
     let now = new Date();
-    db.get(now.getTime() - settings.MILLISECONDS_IN_DAY, now.getTime(),
+    let query = {
+      device: settings.DEVICE_ID,
+      metric: 'temperature',
+      startDate: now.getTime() - settings.MILLISECONDS_IN_DAY,
+      endDate: now.getTime()
+    };
+    db.get(query,
     (r) => {
       res.render('chart', { 'rows': r });
     });
   });
 
   /**
-  * Start server
+  * Public function to update all connected clients with a new temperature
+  * @param {number} temperature Temperature to send out to all clients
   */
-  server.listen(port);
+  function updateTemperature(temperature) {
+    io.emit('update', temperature);
+  }
 
   /**
-  * Public function to update all connected clients with a new temperature
-  * @param {number} t Temperature to send out to all clients
+  * Public function to update all connected clients with a new humidity
+  * @param {number} humidity Humidity to send out to all clients
   */
-  function update(t) {
-    io.emit('update', { 'temperature': t });
+  function updateHumidity(humidity) {
+    io.emit('update', humidity);
   }
 
   // Make update publically available
-  module.exports.update = update;
+  module.exports.updateTemperature = updateTemperature;
+  module.exports.updateHumidity = updateHumidity;
+  module.exports.init = init;
 })();

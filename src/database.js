@@ -1,8 +1,8 @@
 (function() {
   'use strict';
-  const fs = require('fs');
-  const sqlite3 = require('sqlite3').verbose();
-  const settings = require('./settings.js');
+  let fs = require('fs');
+  let sqlite3 = require('sqlite3').verbose();
+  let settings = require('./settings.js');
 
   /**
   * @class Database
@@ -39,8 +39,52 @@
       }
       this.db = global.db;
       this.createTable();
-      this.insertStatement = this.db.prepare('INSERT INTO temperature (date, temperature) VALUES($date, $temperature)');
-      this.selectStatement = this.db.prepare('SELECT date, temperature FROM temperature WHERE date >= $dateStart AND date <= $dateEnd');
+
+      this.insertTemperatureQuery = this.db.prepare(
+        'INSERT INTO temperature (device_id, date, temperature) ' +
+        ' VALUES($device, $date, $value)');
+      this.insertHumidityQuery = this.db.prepare(
+        'INSERT INTO humidity (device_id, date, humidity) ' +
+        ' VALUES($device, $date, $value)');
+
+      this.selectTemperatureQuery = this.db.prepare(
+        'SELECT date, temperature FROM temperature WHERE date >= $dateStart ' +
+        'AND date <= $dateEnd AND device_id = $device ORDER BY date DESC');
+      this.selectHumidityQuery = this.db.prepare(
+        'SELECT date, humidity FROM humidity WHERE date >= $dateStart ' +
+        'AND date <= $dateEnd AND device_id = $device ORDER BY date DESC');
+
+      this.lastTemperatureEntryQuery = this.db.prepare(
+        'SELECT date, temperature FROM temperature WHERE device_id = $device ' +
+        'ORDER BY date DESC LIMIT 1');
+      this.lastHumidityEntryQuery = this.db.prepare(
+        'SELECT date, humidity FROM humidity WHERE device_id = $device ' +
+        'ORDER BY date DESC LIMIT 1');
+
+      this.addDevice(settings.DEVICE_UUID);
+    }
+
+    // TODO: Add insertTemperature and insertHumidity functions
+    // Let device_id be settings.DEVICE_ID if not provided
+
+    /**
+    * @method addDevice
+    * Adds the device UUID to the database if not already existing
+    * Stores the database id for this uuid into settings.DEVICE_ID
+    * @param uuid {string} UUID String for this device
+    * @private
+    */
+    addDevice(uuid) {
+      let uuidQuery =
+        this.db.prepare('INSERT INTO device (uuid) VALUES ($uuid)');
+      uuidQuery.run({$uuid: uuid});
+      this.db.get('SELECT id FROM device WHERE uuid = \'' +
+        uuid + '\'', (err, row) => {
+        if (err) {
+          console.log(err);
+        }
+        settings.DEVICE_ID = row.id;
+      });
     }
 
     /**
@@ -50,101 +94,204 @@
     */
     createTable() {
       this.db.serialize(() => {
-        this.db.run('CREATE TABLE IF NOT EXISTS temperature (date NUM, temperature NUM)');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS device (id INTEGER PRIMARY ' +
+        'KEY AUTOINCREMENT UNIQUE NOT NULL, name VARCHAR (56) DEFAULT ' +
+        '\'No name\', uuid VARCHAR (36) UNIQUE ON CONFLICT IGNORE NOT NULL);');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS temperature ' +
+        '(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, device_id ' +
+        'INTEGER REFERENCES device (id) ON DELETE CASCADE ON UPDATE ' +
+        'CASCADE, date DATETIME, temperature NUMERIC);');
+
+        this.db.run('CREATE TABLE IF NOT EXISTS humidity ' +
+        '(id INTEGER PRIMARY KEY AUTOINCREMENT UNIQUE NOT NULL, device_id ' +
+        'INTEGER REFERENCES device (id) ON DELETE CASCADE ON UPDATE ' +
+        'CASCADE, date DATETIME, humidity NUMERIC);');
+
       });
+    }
+
+    insertHumidity(data, device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
+        device: device,
+        metric: 'humidity',
+        value: data.humidity,
+      });
+
+      return this.insert(queryData);
+    }
+
+    insertTemperature(data, device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
+        device: device,
+        metric: 'temperature',
+        value: data.temperature,
+      });
+
+      return this.insert(queryData);
     }
 
     /**
     * @method insert
     * Adds a temperature reading to the Database
     * @param data {object} Date and temperature object
+    * @property {string} data.device - Device id
+    * @property {string} data.metric - Metric, temperature or humidity
     * @property {number} data.date - Date of the temperature reading
     * @property {number} data.temperature - Temperature value
-    * @param callback {Function} Is called after the row has been inserted
+    * @return {Promise}
     */
-    insert(data, callback) {
-      this.insertStatement.run({
-        $date: data.date,
-        $temperature: data.temperature,
-      }, function(err) {
-        if (err) {
-          console.log(err);
+    insert(data) {
+
+      let query = null;
+
+      switch(data.metric) {
+        case 'temperature':
+          query = this.insertTemperatureQuery;
+          break;
+        case 'humidity':
+          query = this.insertHumidityQuery;
+          break;
+      }
+
+      let promise = new Promise((resolve, reject) => {
+        if(query !== null) {
+          query.run({
+            $device: data.device,
+            $date: data.date,
+            $value: data.value,
+          }, function(err) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve();
+            }
+          });
         }
-        callback(err);
       });
+
+      return promise;
+    }
+
+    getTemperature(data, device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
+        device: device,
+        metric: 'temperature',
+      });
+
+      return this.get(queryData);
+    }
+
+    getHumidity(data, device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let queryData = Object.assign({}, data, {
+        device: device,
+        metric: 'humidity',
+      });
+
+      return this.get(queryData);
     }
 
     /**
     * @method get
     * Returns rows from the database
-    * @param dateStart {number} Start date of the date range to select
-    * @param dateEnd {number} End date of the date range to select
-    * @param callback {Function} Is called with the rows from the select query
+    * @param data {object} Date and temperature object
+    * @property {string} data.device - Device id
+    * @property {string} data.metric - Metric, temperature or humidity
+    * @property {number} data.dateStart - Start date, date range
+    * @property {number} data.dateEnd - End date, date range
+    * @return {Promise} Promise object with result
     */
-    get(dateStart, dateEnd, callback) {
-      this.selectStatement.all({
-        $dateStart: dateStart,
-        $dateEnd: dateEnd,
-      }, function(err, results) {
-        if (err) {
-          console.log(err);
+    get(data) {
+
+      let query = null;
+
+      switch(data.metric) {
+        case 'temperature':
+          query = this.selectTemperatureQuery;
+          break;
+        case 'humidity':
+          query = this.selectHumidityQuery;
+          break;
+      }
+
+      let promise = new Promise((resolve, reject) => {
+
+        if(query !== null) {
+          query.all({
+            $device: data.device,
+            $dateStart: data.dateStart,
+            $dateEnd: data.dateEnd,
+          }, function(err, results) {
+            if (err) {
+              reject(err);
+            }
+            resolve(results);
+          });
         }
-        callback(results);
       });
+
+      return promise;
     }
 
-    /**
-    * @method extremes
-    * Returns a min and max temperature from the database
-    * Returned object will have min and max properties
-    * @param dateStart {number} Start date of the date range to select
-    * @param dateEnd {number} End date of the date range to select
-    * @param callback {Function} Is called with the rows from the select query
-    */
-    extremes(dateStart, dateEnd, callback) {
-      let extremes = {
-        min: {},
-        max: {},
+    getLastTemperatureEntry(device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let data = {
+        device: device,
+        metric: 'temperature',
       };
 
-      let filterQuery = dateStart || dateEnd ? ' WHERE' : '';
-      if (dateStart) {
-        filterQuery += ' date >= ' + dateStart.toString();
-      }
-      if (dateEnd) {
-        if (dateStart) {
-          filterQuery += ' AND';
-        }
-        filterQuery += ' date < ' + dateEnd.toString();
-      }
+      return this.getLastEntry(data);
+    }
 
-      this.db.get('SELECT date, MIN(temperature) as temperature FROM temperature' + filterQuery, (err, row) => {
-        if (err) {
-          console.log(err);
-        }
-        extremes.min = row;
-        this.db.get('SELECT date, MAX(temperature) as temperature FROM temperature' + filterQuery, (err, row) => {
-          if (err) {
-            console.log(err);
-          }
-          extremes.max = row;
-          callback(extremes);
-        });
-      });
+    getLastHumidityEntry(device) {
+      device = device === undefined ? settings.DEVICE_ID : device;
+      let data = {
+        device: device,
+        metric: 'humidity',
+      };
+
+      return this.getLastEntry(data);
     }
 
     /**
     * @method getLastEntry
     * Returns THE last entry in the database
-    * @param callback {Function} Is called with the row from the select query
+    * @param data {object} Date and temperature object
+    * @property {string} data.device - Device id
+    * @property {string} data.metric - Metric, temperature or humidity
+    * @return {Promise} Row from the select query
     */
-    getLastEntry(callback) {
-      this.db.get('SELECT date, temperature FROM temperature ORDER BY date DESC LIMIT 1', function(err, row) {
-        if (err) {
-          console.log(err);
+    getLastEntry(data) {
+
+      let query = null;
+
+      switch(data.metric) {
+        case 'temperature':
+          query = this.lastTemperatureEntryQuery;
+          break;
+        case 'humidity':
+          query = this.lastHumidityEntryQuery;
+          break;
+      }
+
+      var promise = new Promise((resolve, reject) => {
+        if(query !== null) {
+          query.all({ $device: data.device }, function(err, result) {
+            if (err) {
+              reject(err);
+            } else {
+              resolve(result[0]);
+            }
+          });
         }
-        callback(row);
       });
+
+      return promise;
     }
   }
 
