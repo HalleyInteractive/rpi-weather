@@ -20,7 +20,7 @@
 
   app.use('/api', api.router);
   app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
-  app.set('views', path.resolve(__dirname) + '/views');
+  app.set('view engine', 'handlebars');
 
   // Static routes
   app.use('/css', express.static('static/css'));
