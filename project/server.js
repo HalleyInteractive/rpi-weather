@@ -19,7 +19,7 @@
   }
 
   app.use('/api', api.router);
-  app.engine('handlebars', exphbs({ defaultLayout: 'index', layoutsDir:__dirname + '/views/layouts' }));
+  app.engine('handlebars', exphbs({ defaultLayout: 'index', layoutsDir: __dirname + '/views/layouts' }));
   app.set('view engine', 'handlebars');
   app.set('views', __dirname + '/views');
   app.set('layouts', __dirname + '/views/layouts');
@@ -44,12 +44,12 @@
       })
       .catch((error) => {
         console.log(error);
-        res.status(500).send("get humid error");
+        res.status(500).send('Get humidity error');
       });
     })
     .catch((error) => {
       console.log(error);
-      res.status(500).send("get temp error");
+      res.status(500).send('Get temperature error');
     });
   });
 
