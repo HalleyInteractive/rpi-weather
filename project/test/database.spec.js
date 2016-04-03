@@ -44,19 +44,6 @@
           return db.insertHumidity(settings.testValues.humidity.today);
         });
     	});
-
-      describe('Failing insert', function() {
-        it('Should fail the insert and call reject', function(done) {
-          db.insert({device:-1, metric:'temperature', date: null,})
-          .then(function() {
-            assert.fail('Should not complete');
-            done();
-          })
-          .catch(function() {
-            done();
-          });
-        });
-      });
     });
 
     describe('Get entries tests', function() {
@@ -128,40 +115,6 @@
             done(error);
           });
       	});
-      });
-
-      describe('Failing get', function() {
-        it('Should fail the get and call reject', function(done) {
-          db.get({
-            device:-1,
-            metric:'temperature',
-            dateStart: null,
-            dateEnd: null
-          })
-          .then(function() {
-            assert.fail('Should not complete');
-            done();
-          })
-          .catch(function() {
-            done();
-          });
-        });
-      });
-
-      describe('Failing getLastEntry', function() {
-        it('Should fail the getLastEntry and call reject', function(done) {
-          db.getLastEntry({
-            device:-1,
-            metric:'temperature',
-          })
-          .then(function() {
-            assert.fail('Should not complete');
-            done();
-          })
-          .catch(function() {
-            done();
-          });
-        });
       });
 
     });
