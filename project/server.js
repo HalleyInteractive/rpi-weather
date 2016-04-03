@@ -19,8 +19,10 @@
   }
 
   app.use('/api', api.router);
-  app.engine('handlebars', exphbs({ defaultLayout: 'index' }));
+  app.engine('handlebars', exphbs({ defaultLayout: 'index', layoutsDir:__dirname + '/views/layouts' }));
   app.set('view engine', 'handlebars');
+  app.set('views', __dirname + '/views');
+  app.set('layouts', __dirname + '/views/layouts');
 
   // Static routes
   app.use('/css', express.static('static/css'));
@@ -41,11 +43,13 @@
         });
       })
       .catch((error) => {
-        res.status(500).send(error);
+        console.log(error);
+        res.status(500).send("get humid error");
       });
     })
     .catch((error) => {
-      res.status(500).send(error);
+      console.log(error);
+      res.status(500).send("get temp error");
     });
   });
 

@@ -2,7 +2,7 @@
 (function() {
   'use strict';
   let assert = require('chai').assert;
-  let settings = require('../src/settings.js');
+  let settings = require('./../settings.js');
   let request = require('request');
   let server = null;
   let baseUrl = 'http://localhost:' + settings.SERVER_PORT;
@@ -11,12 +11,11 @@
 
   	it('Should start a webserver for the weather API and add a few readings',
   	function(done) {
-  		server = require('./../src/server.js');
+  		server = require('./../server.js');
   		server.init();
   		done();
   	});
 
-    /*
     it('Should return home page', function(done) {
   		request(baseUrl + '/', function(error, response) {
   			assert.isNull(error);
@@ -32,7 +31,6 @@
   			done();
   		});
   	});
-    */
 
   	it('Should return last entries', function(done) {
   		request(baseUrl + '/api/', function(error, response) {
