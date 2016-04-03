@@ -1,8 +1,8 @@
 (function() {
   'use strict';
 
-  let db = require('./../src/database.js');
-  let settings = require('./../src/settings.js');
+  let db = require('./../database.js');
+  let settings = require('./../settings.js');
   let assert = require('chai').assert;
 
   settings.DATABASE_FILE = 'test_database.db';

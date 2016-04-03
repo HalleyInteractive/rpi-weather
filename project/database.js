@@ -61,7 +61,7 @@
         'SELECT date, humidity FROM humidity WHERE device_id = $device ' +
         'ORDER BY date DESC LIMIT 1');
 
-      this.addDevice(settings.DEVICE_UUID);
+      return this.addDevice(settings.DEVICE_UUID);
     }
 
     // TODO: Add insertTemperature and insertHumidity functions
@@ -72,19 +72,25 @@
     * Adds the device UUID to the database if not already existing
     * Stores the database id for this uuid into settings.DEVICE_ID
     * @param uuid {string} UUID String for this device
+    * @return {Promise}
     * @private
     */
     addDevice(uuid) {
       let uuidQuery =
         this.db.prepare('INSERT INTO device (uuid) VALUES ($uuid)');
       uuidQuery.run({ $uuid: uuid });
-      this.db.get('SELECT id FROM device WHERE uuid = \'' +
-      uuid + '\'', (err, row) => {
-        if (err) {
-          console.log(err);
-        }
-        settings.DEVICE_ID = row.id;
+      let promise = new Promise((resolve, reject) => {
+        this.db.get('SELECT id FROM device WHERE uuid = \'' + uuid + '\'',
+        (error, row) => {
+          if (error) {
+            reject(error);
+          } else {
+            settings.DEVICE_ID = row.id;
+            resolve(row.id);
+          }
+        });
       });
+      return promise;
     }
 
     /**
@@ -285,7 +291,11 @@
             if (err) {
               reject(err);
             } else {
-              resolve(result[0]);
+              if(result.length > 0) {
+                resolve(result[0]);
+              } else {
+                reject('No ' + data.metric + 'entry found');
+              }
             }
           });
         }

@@ -3,9 +3,9 @@
   "version": "1.0.0",
   "description": "Reads and logs temperatures",
   "repository": "https://github.com/HalleyInteractive/rpi-weather",
-  "main": "index.js",
+  "main": "project/index.js",
   "scripts": {
-    "test": "istanbul cover ./node_modules/mocha/bin/_mocha -- -R spec && ./node_modules/.bin/codecov && gulp test-jscs"
+    "test": "istanbul cover ./node_modules/mocha/bin/_mocha 'project/test/*.spec.js' -- -R spec && ./node_modules/.bin/codecov && gulp test-jscs"
   },
   "author": "Niels Overwijn",
   "license": "MIT",
