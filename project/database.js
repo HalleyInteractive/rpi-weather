@@ -182,6 +182,15 @@
       return promise;
     }
 
+    /**
+    * @method getTemperature
+    * Gets temperature entry
+    * @param data {object} Date and temperature object
+    * @param deviceId {String} Device ID
+    * @property {number} data.dateStart - Start date, date range
+    * @property {number} data.dateEnd - End date, date range
+    * @return {Promise}
+    */
     getTemperature(data, deviceId) {
       deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
@@ -192,6 +201,15 @@
       return this.get(queryData);
     }
 
+    /**
+    * @method getHumidity
+    * Gets humidity entry
+    * @param data {object} Date and humidity object
+    * @param deviceId {String} Device ID
+    * @property {number} data.dateStart - Start date, date range
+    * @property {number} data.dateEnd - End date, date range
+    * @return {Promise}
+    */
     getHumidity(data, deviceId) {
       deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let queryData = Object.assign({}, data, {
@@ -244,6 +262,12 @@
       return promise;
     }
 
+    /**
+    * @method getLastTemperatureEntry
+    * Get Last entry from the temperature table
+    * @param deviceId {String} Device ID
+    * @return {Promise}
+    */
     getLastTemperatureEntry(deviceId) {
       deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let data = {
@@ -254,6 +278,12 @@
       return this.getLastEntry(data);
     }
 
+    /**
+    * @method getLastHumidityEntry
+    * Get Last entry from the humidity table
+    * @param deviceId {String} Device ID
+    * @return {Promise}
+    */
     getLastHumidityEntry(deviceId) {
       deviceId = deviceId === undefined ? settings.DEVICE_ID : deviceId;
       let data = {
