@@ -44,7 +44,7 @@
       let deviceIdJson = require('./device.json');
       settings.DEVICE_UUID = deviceIdJson.uuid;
 
-      firebase.once("value", function(snapshot) {
+      firebase.once("value", (snapshot) => {
         if(!snapshot.exists()) {
           settings.FIREBASE
           .child('devices')
@@ -68,8 +68,8 @@
         }
       });
       resolve(deviceIdJson.uuid);
-
     });
+
     return promise;
   }
 
