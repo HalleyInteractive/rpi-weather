@@ -86,7 +86,7 @@
         date: new Date().getTime(),
       });
 
-      firebase.child('temperature/log').push({
+      firebase.child('temperature/log').push().set({
         value: temperatureReading,
         date: new Date().getTime(),
       });
@@ -108,7 +108,7 @@
         value: humidityReading,
         date: new Date().getTime(),
       });
-      firebase.child('Humidity/log').push({
+      firebase.child('Humidity/log').push().set({
         value: humidityReading,
         date: new Date().getTime(),
       });
