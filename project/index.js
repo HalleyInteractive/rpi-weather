@@ -43,7 +43,6 @@
 
       let deviceIdJson = require('./device.json');
       settings.DEVICE_UUID = deviceIdJson.uuid;
-      resolve(deviceIdJson.uuid);
 
       firebase.once("value", function(snapshot) {
         if(!snapshot.exists()) {
@@ -68,6 +67,7 @@
           });
         }
       });
+      resolve(deviceIdJson.uuid);
 
     });
     return promise;
