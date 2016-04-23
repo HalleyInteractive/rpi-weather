@@ -2,7 +2,7 @@
   'use strict';
 
   const fs = require('fs');
-  const server = require('./server.js');
+  //const server = require('./server.js');
 
   let lastTemperature = 0;
   let lastHumidity = 0;
@@ -16,7 +16,7 @@
   function init() {
     getDeviceUUID()
     .then(() => {
-      server.init();
+      //server.init();
       setInterval(readDHT22.bind(this), 5000);
     });
   }
@@ -82,15 +82,15 @@
       lastTemperature = temperatureReading;
 
       firebase.child('temperature/last').set({
-        value: lastTemperature,
-        date: new Date().getTime()
+        value: temperatureReading,
+        date: new Date().getTime(),
       });
       firebase.child('temperature/log').push({
-        value: lastTemperature,
-        date: new Date().getTime()
+        value: temperatureReading,
+        date: new Date().getTime(),
       });
 
-      server.update(dht22.readout());
+      //server.update(dht22.readout());
     }
   }
 
@@ -99,20 +99,20 @@
   * Saves reading if needed
   * @param {object} humidity Humidity reading including date and humidity
   */
-  function checkHumidityReading(temperatureReading) {
-    if (temperatureReading !== lastHumidity) {
-      lastHumidity = temperatureReading;
+  function checkHumidityReading(humidityReading) {
+    if (humidityReading !== lastHumidity) {
+      lastHumidity = humidityReading;
 
       firebase.child('humidity/last').set({
-        value: lastTemperature,
-        date: new Date().getTime()
+        value: humidityReading,
+        date: new Date().getTime(),
       });
       firebase.child('Humidity/log').push({
-        value: lastTemperature,
-        date: new Date().getTime()
+        value: humidityReading,
+        date: new Date().getTime(),
       });
 
-      server.update(dht22.readout());
+      //server.update(dht22.readout());
     }
   }
 
