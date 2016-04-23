@@ -7,31 +7,22 @@
   const server = require('http').Server(app);
   const io = require('socket.io')(server);
   const exphbs  = require('express-handlebars');
-  const api = require('./api.js');
-  const db = require('./database.js');
   const port = process.env.PORT || settings.SERVER_PORT;
   let path = require('path');
 
   function init() {
-    db.init();
-    api.init();
     server.listen(port);
   }
 
-  app.use('/api', api.router);
-  app.engine('handlebars', exphbs({ defaultLayout: 'index', layoutsDir: __dirname + '/views/layouts' }));
-  app.set('view engine', 'handlebars');
-  app.set('views', __dirname + '/views');
-  app.set('layouts', __dirname + '/views/layouts');
-
   // Static routes
-  app.use('/css', express.static('static/css'));
+  app.use('/', express.static('static/'));
 
   /**
   * Main route that gets the current/last entry
   * /
   */
   app.get('/', (req, res) => {
+    /*
     db.getLastTemperatureEntry()
     .then((temperatureRow) => {
       db.getLastHumidityEntry()
@@ -51,6 +42,7 @@
       console.log(error);
       res.status(500).send('Get temperature error');
     });
+    */
   });
 
   /**
@@ -59,6 +51,7 @@
   */
   app.get('/chart', (req, res) => {
     let now = new Date();
+    /*
     let queryDates = {
       dateStart: now.getTime() - settings.MILLISECONDS_IN_DAY,
       dateEnd: now.getTime(),
@@ -79,6 +72,7 @@
     .catch((error) => {
       res.status(500).send(error);
     });
+    */
   });
 
   /**

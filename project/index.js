@@ -1,7 +1,6 @@
 (function() {
   'use strict';
 
-  const db = require('./database.js');
   const fs = require('fs');
   const server = require('./server.js');
 
@@ -9,15 +8,17 @@
   let lastHumidity = 0;
   let settings = require('./settings.js');
   let dht22 = require('./dht22.js');
+  let firebase = settings.FIREBASE.child('devices/' + settings.DEVICE_UUID);
 
   /**
   * Initialises the app
   */
   function init() {
-    getDeviceUUID();
-    db.init();
-    server.init();
-    setInterval(readDHT22.bind(this), 5000);
+    getDeviceUUID()
+    .then(() => {
+      server.init();
+      setInterval(readDHT22.bind(this), 5000);
+    });
   }
 
   function readDHT22() {
@@ -31,16 +32,44 @@
   * If the file doesn't exists, a new one will be created
   */
   function getDeviceUUID() {
-    if (!fs.existsSync('./device.json')) {
-      let device = {
-        uuid: require('node-uuid').v4(),
-      };
-      fs.writeFileSync('device.json', JSON.stringify(device));
-    }
+    let promise = new Promise(function(resolve) {
+      if (!fs.existsSync('./device.json')) {
+        let device = {
+          uuid: require('node-uuid').v4(),
+        };
+        fs.writeFileSync('device.json', JSON.stringify(device));
+      }
 
-    let deviceIdJson = require('./device.json');
-    settings.DEVICE_UUID = deviceIdJson.uuid;
-    return deviceIdJson.uuid;
+      let deviceIdJson = require('./device.json');
+      settings.DEVICE_UUID = deviceIdJson.uuid;
+      resolve(deviceIdJson.uuid);
+
+      firebase.once("value", function(snapshot) {
+        if(!snapshot.exists()) {
+          settings.FIREBASE
+          .child('devices')
+          .set({
+            name: 'unnamed',
+            temperature: {
+              last: {
+                value: 0,
+                date: 0
+              },
+              log: []
+            },
+            humidity: {
+              last: {
+                value: 0,
+                date: 0
+              },
+              log: []
+            }
+          });
+        }
+      });
+
+    });
+    return promise;
   }
 
   /**
@@ -51,10 +80,16 @@
   function checkTemperatureReading(temperatureReading) {
     if (temperatureReading !== lastTemperature) {
       lastTemperature = temperatureReading;
-      db.insertTemperature({
-        date: new Date().getTime(),
-        temperature: temperatureReading,
+
+      firebase.child('temperature/last').set({
+        value: lastTemperature,
+        date: new Date().getTime()
       });
+      firebase.child('temperature/log').push({
+        value: lastTemperature,
+        date: new Date().getTime()
+      });
+
       server.update(dht22.readout());
     }
   }
@@ -67,10 +102,16 @@
   function checkHumidityReading(temperatureReading) {
     if (temperatureReading !== lastHumidity) {
       lastHumidity = temperatureReading;
-      db.insertHumidity({
-        date: new Date().getTime(),
-        humidity: temperatureReading,
+
+      firebase.child('humidity/last').set({
+        value: lastTemperature,
+        date: new Date().getTime()
       });
+      firebase.child('Humidity/log').push({
+        value: lastTemperature,
+        date: new Date().getTime()
+      });
+
       server.update(dht22.readout());
     }
   }

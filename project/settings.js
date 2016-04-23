@@ -1,5 +1,6 @@
 (function() {
   'use strict';
+  let Firebase = require("firebase");
 
   /**
   * Object with settings
@@ -16,6 +17,7 @@
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
     DEVICE_ID: -1,
+    FIREBASE: new Firebase("https://rpi-weather.firebaseio.com/")
   };
 
   module.exports = settings;
