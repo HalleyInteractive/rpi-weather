@@ -48,7 +48,7 @@
       .once("value", (snapshot) => {
         if(!snapshot.exists()) {
           settings.FIREBASE
-          .child('devices')
+          .child('devices/' + settings.DEVICE_UUID)
           .set({
             name: 'unnamed',
             temperature: {
