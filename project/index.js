@@ -8,14 +8,15 @@
   let lastHumidity = 0;
   let settings = require('./settings.js');
   let dht22 = require('./dht22.js');
-  let firebase = settings.FIREBASE.child('devices/' + settings.DEVICE_UUID);
+  let firebase = null;
 
   /**
   * Initialises the app
   */
   function init() {
     getDeviceUUID()
-    .then(() => {
+    .then((deviceUUID) => {
+      firebase = settings.FIREBASE.child('devices/' + deviceUUID);
       //server.init();
       setInterval(readDHT22.bind(this), 5000);
     });
