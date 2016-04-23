@@ -66,8 +66,8 @@
             }
           });
         }
+        resolve(deviceIdJson.uuid);
       });
-      resolve(deviceIdJson.uuid);
     });
 
     return promise;
