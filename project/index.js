@@ -81,10 +81,11 @@
     if (temperatureReading !== lastTemperature) {
       lastTemperature = temperatureReading;
 
-      firebase.child('temperature/last').set({
+      firebase.child('temperature/last').update({
         value: temperatureReading,
         date: new Date().getTime(),
       });
+
       firebase.child('temperature/log').push({
         value: temperatureReading,
         date: new Date().getTime(),
@@ -103,7 +104,7 @@
     if (humidityReading !== lastHumidity) {
       lastHumidity = humidityReading;
 
-      firebase.child('humidity/last').set({
+      firebase.child('humidity/last').update({
         value: humidityReading,
         date: new Date().getTime(),
       });
