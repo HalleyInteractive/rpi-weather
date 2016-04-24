@@ -2,7 +2,6 @@
   'use strict';
 
   const fs = require('fs');
-  const server = require('./server.js');
 
   let lastTemperature = 0;
   let lastHumidity = 0;
@@ -17,7 +16,6 @@
     getDeviceUUID()
     .then((deviceUUID) => {
       firebase = settings.FIREBASE.child('devices/' + deviceUUID);
-      server.init();
       setInterval(readDHT22.bind(this), 5000);
     });
   }
@@ -92,8 +90,6 @@
         value: temperatureReading,
         date: new Date().getTime(),
       });
-
-      //server.update(dht22.readout());
     }
   }
 
@@ -114,8 +110,6 @@
         value: humidityReading,
         date: new Date().getTime(),
       });
-
-      //server.update(dht22.readout());
     }
   }
 
