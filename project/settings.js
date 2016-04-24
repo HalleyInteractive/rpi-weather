@@ -17,7 +17,7 @@
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
     DEVICE_ID: -1,
-    FIREBASE: new Firebase("https://rpi-weather.firebaseio.com/")
+    FIREBASE: new Firebase("https://weather-station.firebaseio.com/")
   };
 
   module.exports = settings;
