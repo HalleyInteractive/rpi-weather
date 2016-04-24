@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="import" href="components/firebase-element/firebase-collection.html">
+  </head>
+  <body>
+
+  </body>
+  <template is="dom-bind">
+    <firebase-collection
+      location="https://rpi-weather.firebaseio.com/devices"
+      data="{{devices}}"></firebase-collection>
+
+    <template is="dom-repeat" items="[[devices]]" as="device">
+      <h4>[[device.name]]</h4>
+      <temperature>[[device.temperature.last.value]]</temperature>
+    </template>
+  </template>
+</html>
