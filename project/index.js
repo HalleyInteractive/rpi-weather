@@ -86,10 +86,10 @@
         date: new Date().getTime(),
       });
 
-      firebase.child('temperature/log').push().set({
-        value: temperatureReading,
-        date: new Date().getTime(),
-      });
+      firebase.child('temperature/log').push().set([
+        new Date().getTime(),
+        temperatureReading
+      ]);
     }
   }
 
@@ -106,10 +106,10 @@
         value: humidityReading,
         date: new Date().getTime(),
       });
-      firebase.child('humidity/log').push().set({
-        value: humidityReading,
-        date: new Date().getTime(),
-      });
+      firebase.child('humidity/log').push().set([
+        new Date().getTime(),
+        humidityReading
+      ]);
     }
   }
 
