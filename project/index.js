@@ -46,7 +46,7 @@
       .once("value", (snapshot) => {
         if(!snapshot.exists()) {
           settings.FIREBASE
-          .child('devices/' + settings.DEVICE_UUID)
+          //.child('devices/' + settings.DEVICE_UUID)
           .set({
             info: {
               name: 'unnamed'
