@@ -17,7 +17,7 @@
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
     DEVICE_ID: -1,
-    FIREBASE: new Firebase("https://weather-station.firebaseio.com/")
+    FIREBASE: new Firebase("https://weather-station.firebaseio.com/devices/378e266a-14e0-4ea9-a3e3-d679d40aa3de/humidity/log")
   };
 
   module.exports = settings;

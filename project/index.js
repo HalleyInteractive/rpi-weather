@@ -48,20 +48,22 @@
           settings.FIREBASE
           .child('devices/' + settings.DEVICE_UUID)
           .set({
-            name: 'unnamed',
-            temperature: {
-              last: {
-                value: 0,
-                date: 0
-              },
-              log: []
+            info: {
+              name: 'unnamed'
             },
-            humidity: {
-              last: {
+            last: {
+              temperature: {
                 value: 0,
                 date: 0
               },
-              log: []
+              humidity: {
+                value: 0,
+                date: 0
+              }
+            },
+            log: {
+              temperature: [],
+              humidity: []
             }
           });
         }
@@ -81,15 +83,15 @@
     if (temperatureReading !== lastTemperature) {
       lastTemperature = temperatureReading;
 
-      firebase.child('temperature/last').update({
+      firebase.child('last/temperature').update({
         value: temperatureReading,
         date: new Date().getTime(),
       });
 
-      firebase.child('temperature/log').push().set([
-        new Date().getTime(),
-        temperatureReading
-      ]);
+      firebase.child('log/temperature').push().set({
+        date: new Date().getTime(),
+        value: temperatureReading
+      });
     }
   }
 
@@ -102,14 +104,14 @@
     if (humidityReading !== lastHumidity) {
       lastHumidity = humidityReading;
 
-      firebase.child('humidity/last').update({
+      firebase.child('last/humidity').update({
         value: humidityReading,
         date: new Date().getTime(),
       });
-      firebase.child('humidity/log').push().set([
-        new Date().getTime(),
-        humidityReading
-      ]);
+      firebase.child('log/humidity').push().set({
+        date: new Date().getTime(),
+        value: humidityReading
+      });
     }
   }
 
