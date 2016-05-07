@@ -49,7 +49,8 @@
           .child('devices/' + settings.DEVICE_UUID)
           .set({
             info: {
-              name: 'unnamed'
+              name: 'unnamed',
+              uuid: deviceIdJson.uuid
             },
             last: {
               temperature: {
