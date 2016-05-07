@@ -15,7 +15,7 @@
   function init() {
     getDeviceUUID()
     .then((deviceUUID) => {
-      firebase = settings.FIREBASE.child('devices/' + deviceUUID);
+      firebase = settings.FIREBASE.child('storage/' + deviceUUID);
       setInterval(readDHT22.bind(this), 5000);
     });
   }
@@ -48,24 +48,8 @@
           settings.FIREBASE
           .child('devices/' + settings.DEVICE_UUID)
           .set({
-            info: {
               name: 'unnamed',
               uuid: deviceIdJson.uuid
-            },
-            last: {
-              temperature: {
-                value: 0,
-                date: 0
-              },
-              humidity: {
-                value: 0,
-                date: 0
-              }
-            },
-            log: {
-              temperature: [],
-              humidity: []
-            }
           });
         }
         resolve(deviceIdJson.uuid);
