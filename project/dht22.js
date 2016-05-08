@@ -28,7 +28,7 @@
     }
 
     humidity() {
-      return this.roundHalf(readout.humidity);
+      return Math.floor(readout.humidity);
     }
 
     readout() {
