@@ -8,6 +8,8 @@
   let settings = require('./settings.js');
   let dht22 = require('./dht22.js');
   let firebase = null;
+  let temperatureLog = [];
+  let humidityLog = [];
 
   /**
   * Initialises the app
@@ -15,7 +17,7 @@
   function init() {
     getDeviceUUID()
     .then((deviceUUID) => {
-      firebase = settings.FIREBASE.child('storage/' + deviceUUID);
+      firebase = settings.FIREBASE.child('devices/' + deviceUUID);
       setInterval(readDHT22.bind(this), 5000);
     });
   }
@@ -48,8 +50,26 @@
           settings.FIREBASE
           .child('devices/' + settings.DEVICE_UUID)
           .set({
+            info: {
               name: 'unnamed',
               uuid: deviceIdJson.uuid
+            },
+            temperature: {
+              last: {
+                value: 0,
+                date: 0
+              },
+              log: {
+              }
+            },
+            humidity: {
+              last: {
+                value: 0,
+                date: 0
+              },
+              log: {
+              }
+            }
           });
         }
         resolve(deviceIdJson.uuid);
@@ -68,15 +88,18 @@
     if (temperatureReading !== lastTemperature) {
       lastTemperature = temperatureReading;
 
-      firebase.child('last/temperature').update({
+      let temperatureEntry = {
         value: temperatureReading,
         date: new Date().getTime(),
-      });
+      };
 
-      firebase.child('log/temperature').push().set({
-        date: new Date().getTime(),
-        value: temperatureReading
-      });
+      temperatureLog.push(temperatureEntry);
+      if(temperatureLog.length > 10) {
+        temperatureEntry.shift();
+      }
+
+      firebase.child('temperature/last').update(temperatureEntry);
+      firebase.child('temperature/log').set(temperatureLog);
     }
   }
 
@@ -89,14 +112,18 @@
     if (humidityReading !== lastHumidity) {
       lastHumidity = humidityReading;
 
-      firebase.child('last/humidity').update({
+      let humidityEntry = {
         value: humidityReading,
         date: new Date().getTime(),
-      });
-      firebase.child('log/humidity').push().set({
-        date: new Date().getTime(),
-        value: humidityReading
-      });
+      };
+
+      humidityLog.push(humidityEntry);
+      if(humidityLog.length > 10) {
+        humidityEntry.shift();
+      }
+
+      firebase.child('humidity/last').update(humidityEntry);
+      firebase.child('humidity/log').set(humidityLog);
     }
   }
 
