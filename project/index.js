@@ -94,7 +94,7 @@
       };
 
       temperatureLog.push(temperatureEntry);
-      if(temperatureLog.length > 10) {
+      if(temperatureLog.length > 100) {
         temperatureLog.shift();
       }
 
@@ -118,7 +118,7 @@
       };
 
       humidityLog.push(humidityEntry);
-      if(humidityLog.length > 10) {
+      if(humidityLog.length > 100) {
         humidityLog.shift();
       }
 
