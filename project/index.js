@@ -95,7 +95,7 @@
 
       temperatureLog.push(temperatureEntry);
       if(temperatureLog.length > 10) {
-        temperatureEntry.shift();
+        temperatureLog.shift();
       }
 
       firebase.child('temperature/last').update(temperatureEntry);
@@ -119,7 +119,7 @@
 
       humidityLog.push(humidityEntry);
       if(humidityLog.length > 10) {
-        humidityEntry.shift();
+        humidityLog.shift();
       }
 
       firebase.child('humidity/last').update(humidityEntry);
