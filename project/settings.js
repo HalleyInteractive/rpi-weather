@@ -17,7 +17,8 @@
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
     DEVICE_ID: -1,
-    FIREBASE: new Firebase("https://weather-station.firebaseio.com/")
+    FIREBASE: new Firebase("https://weather-station.firebaseio.com/"),
+    FIREBASE_SECRET: require("./../firebase-secret.json"),
   };
 
   module.exports = settings;

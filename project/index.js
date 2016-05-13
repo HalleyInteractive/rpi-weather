@@ -18,7 +18,10 @@
     getDeviceUUID()
     .then((deviceUUID) => {
       firebase = settings.FIREBASE.child('devices/' + deviceUUID);
-      setInterval(readDHT22.bind(this), 5000);
+      authFirebase()
+      .then(() => {
+        setInterval(readDHT22.bind(this), 5000);
+      });
     });
   }
 
@@ -26,6 +29,22 @@
     dht22.read();
     checkTemperatureReading(dht22.temperature());
     checkHumidityReading(dht22.humidity());
+  }
+
+  function authFirebase() {
+    let FirebaseTokenGenerator = require("firebase-token-generator");
+    let tokenGenerator = new FirebaseTokenGenerator(settings.FIREBASE_SECRET.token);
+    let token = tokenGenerator.createToken({ uid: "uniqueID1", iHasAccess: true});
+    let promise = new Promise(function(resolve, reject) {
+      firebase.authWithCustomToken(token, function(error) {
+        if (error) {
+          reject();
+        } else {
+          resolve();
+        }
+      });
+    });
+    return promise;
   }
 
   /**
