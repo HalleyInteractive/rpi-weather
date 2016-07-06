@@ -17,10 +17,12 @@
   function init() {
     getDeviceUUID()
     .then((deviceUUID) => {
-      firebase.initializeApp({
-        serviceAccount: "../firebase-secret.json",
-        databaseURL: "https://weather-station.firebaseio.com"
+      settings.FIREBASE.initializeApp({
+        serviceAccount: settings.FIREBASE_SECRET,
+        databaseURL: settings.FIREBASE_URL
       });
+      firebase = settings.FIREBAES.database().ref('devices/' + deviceUUID);
+      setInterval(readDHT22.bind(this), settings.MEASURE_INTERVAL);
     });
   }
 

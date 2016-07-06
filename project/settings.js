@@ -1,6 +1,5 @@
 (function() {
   'use strict';
-  let Firebase = require("firebase");
 
   /**
   * Object with settings
@@ -11,13 +10,14 @@
   * @property {number} MILLISECONDS_IN_DAY - Number of milliseconds in 1 day
   */
   let settings = {
-    MEASURE_INTERVAL: 1000,
+    MEASURE_INTERVAL: 10000,
     DATABASE_FILE: 'weather.db',
     SERVER_PORT: 8080,
     MILLISECONDS_IN_DAY: 60 * 60 * 24 * 1000,
     DEVICE_UUID: '',
     DEVICE_ID: -1,
-    FIREBASE: new Firebase("https://weather-station.firebaseio.com/"),
+    FIREBASE: require("firebase"),
+    FIREBASE_URL: 'https://weather-station.firebaseio.com',
     FIREBASE_SECRET: require("./../firebase-secret.json"),
   };
 
